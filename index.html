@@ -25,7 +25,7 @@
       flex-direction: column;
       align-items: center;
       box-sizing: border-box;
-      flex-shrink: 0; /* Prevent sidebar from shrinking */
+      flex-shrink: 0;
     }
     .profile {
       text-align: center;
@@ -114,104 +114,70 @@
       box-sizing: border-box;
       word-wrap: break-word;
     }
-    /* Project cards */
-    .projects-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 28px;
-      justify-content: flex-start;
-      align-items: flex-start;
-      margin-top: 30px;
-      margin-left: 10px;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    .project-card {
-      background: #23272f;
-      border-radius: 13px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 32px 44px;
-      font-size: 1.25rem;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.18s, transform 0.15s;
-      min-width: 180px;
-      max-width: 320px;
-      text-align: center;
-      margin-bottom: 10px;
-      border: 2px solid transparent;
-      word-break: break-word;
-    }
-    .project-card:hover {
-      background: #282c34;
-      border-color: #60aaff;
-      transform: scale(1.05);
-      color: #60aaff;
-    }
-    /* Markdown rendered content and cards */
-    #main-content > * {
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    #main-content img,
-    #main-content table,
-    #main-content pre,
-    #main-content iframe {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      box-sizing: border-box;
-      margin-bottom: 1.5rem;
-    }
-    /* Personal about card */
-    .about-card {
+    /* Homepage welcome card */
+    .welcome-card {
       background: #23272f;
       border-radius: 16px;
-      padding: 40px;
-      max-width: 640px;
+      padding: 44px 56px;
+      max-width: 600px;
+      margin: 64px auto 0 auto;
       color: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      font-size: 1.1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .about-card h1 {
+    .welcome-card h1 {
       margin-top: 0;
       margin-bottom: 10px;
       font-size: 2.2rem;
       font-weight: 700;
       color: #60aaff;
     }
-    .about-card p {
-      margin: 8px 0;
-      font-size: 1.1rem;
-      line-height: 1.5;
+    .welcome-card p {
+      margin: 16px 0 0 0;
+      font-size: 1.15rem;
+      line-height: 1.7;
       color: #b3bbc6;
     }
-    /* Responsive for smaller screens */
+    .welcome-stats {
+      display: flex;
+      gap: 38px;
+      justify-content: center;
+      margin: 26px 0 0 0;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: #282c34;
+      border-radius: 10px;
+      padding: 18px 28px;
+      min-width: 120px;
+      color: #fff;
+      margin: 6px 0;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-title {
+      color: #b3bbc6;
+      font-size: 0.97rem;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #60aaff;
+    }
+    /* Responsive */
     @media (max-width: 950px) {
-      .container {
-        flex-direction: column;
-      }
-      .content {
-        flex-direction: column;
-        padding: 24px 8px;
-        gap: 16px;
-        overflow: visible;
-      }
-      .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 12px 0;
-      }
-      #main-content {
-        max-height: none;
-      }
-      .about-card {
-        max-width: 100%;
-        padding: 24px;
-      }
+      .container { flex-direction: column; }
+      .content { flex-direction: column; padding: 24px 8px; gap: 16px; overflow: visible; }
+      .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 12px 0; }
+      #main-content { max-height: none; }
+      .welcome-card { max-width: 100%; padding: 24px; }
     }
   </style>
 </head>
@@ -220,11 +186,8 @@
     <!-- SIDEBAR START -->
     <aside class="sidebar">
       <div class="profile">
-        <!-- EDIT AVATAR IMAGE URL -->
         <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Abhijeet Vaibhav Avatar" class="avatar" />
-        <!-- EDIT NAME -->
         <h2>Abhijeet Vaibhav</h2>
-        <!-- EDIT SUBTITLE -->
         <p>IIT Bombay</p>
       </div>
       <nav>
@@ -253,6 +216,7 @@
   </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+  // Project config
   const projects = [
     {
       name: "Spectrometry",
@@ -279,12 +243,40 @@
     });
   });
 
-  // Load empty home content
+  // BEST HOMEPAGE: welcome card, highlights, quick stats
   function loadHome() {
-    document.getElementById('main-content').innerHTML = '';
+    const html = `
+      <div class="welcome-card">
+        <h1>Welcome!</h1>
+        <p>
+          Hi, I'm <b>Abhijeet Vaibhav</b><br>
+          A student at <strong>IIT Bombay</strong> passionate about AI, machine learning, and software development.
+          <br><br>
+          Explore my <span style="color:#60aaff; font-weight:500;">projects</span> and connect with me!
+        </p>
+        <div class="welcome-stats">
+          <div class="stat-card">
+            <div class="stat-title">Projects</div>
+            <div class="stat-value">${projects.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">College</div>
+            <div class="stat-value">IIT Bombay</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Email</div>
+            <div class="stat-value">your.email@example.com</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">LinkedIn</div>
+            <div class="stat-value"><a href="https://linkedin.com/in/yourprofile" target="_blank" style="color:#60aaff; text-decoration:none;">Profile</a></div>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('main-content').innerHTML = html;
   }
 
-  // Show about card with personal details
+  // About card
   function showAbout() {
     const html = `
       <div class="about-card">
@@ -299,7 +291,7 @@
     document.getElementById('main-content').innerHTML = html;
   }
 
-  // Show project cards
+  // Show projects grid
   function showProjects() {
     let html = `<div class="projects-grid">`;
     projects.forEach((proj, idx) => {
@@ -309,7 +301,7 @@
     document.getElementById('main-content').innerHTML = html;
   }
 
-  // Load README or index.html of selected project
+  // Load README or index.html for project
   function loadProjectContent(idx) {
     const proj = projects[idx];
     const mainContent = document.getElementById('main-content');
@@ -345,6 +337,9 @@
         });
     }
   }
+
+  // Load homepage by default on page load.
+  window.onload = loadHome;
 </script>
 </body>
 </html>

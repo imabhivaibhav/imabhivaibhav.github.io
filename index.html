@@ -104,15 +104,15 @@
       padding: 42px 38px 36px 38px;
       gap: 38px;
       box-sizing: border-box;
-      overflow: hidden; /* Prevent horizontal scroll */
+      overflow: hidden;
     }
     #main-content {
       flex: 3;
       overflow-y: auto;
       max-height: 100vh;
-      max-width: 100%; /* Prevent overflow horizontally */
+      max-width: 100%;
       box-sizing: border-box;
-      word-wrap: break-word; /* break long words if needed */
+      word-wrap: break-word;
     }
     /* Project cards */
     .projects-grid {
@@ -149,7 +149,7 @@
       transform: scale(1.05);
       color: #60aaff;
     }
-    /* Markdown rendered content */
+    /* Markdown rendered content and cards */
     #main-content > * {
       max-width: 100%;
       box-sizing: border-box;
@@ -164,7 +164,30 @@
       box-sizing: border-box;
       margin-bottom: 1.5rem;
     }
-    /* Responsive */
+    /* Personal about card */
+    .about-card {
+      background: #23272f;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 640px;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      font-size: 1.1rem;
+    }
+    .about-card h1 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #60aaff;
+    }
+    .about-card p {
+      margin: 8px 0;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: #b3bbc6;
+    }
+    /* Responsive for smaller screens */
     @media (max-width: 950px) {
       .container {
         flex-direction: column;
@@ -185,6 +208,10 @@
       #main-content {
         max-height: none;
       }
+      .about-card {
+        max-width: 100%;
+        padding: 24px;
+      }
     }
   </style>
 </head>
@@ -193,17 +220,17 @@
     <!-- SIDEBAR START -->
     <aside class="sidebar">
       <div class="profile">
+        <!-- EDIT AVATAR IMAGE URL -->
         <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Abhijeet Vaibhav Avatar" class="avatar" />
+        <!-- EDIT NAME -->
         <h2>Abhijeet Vaibhav</h2>
+        <!-- EDIT SUBTITLE -->
         <p>IIT Bombay</p>
       </div>
       <nav>
         <ul id="nav-list">
           <li class="active" onclick="loadHome()">Home</li>
-          <li>About</li>
-          <li>Categories</li>
-          <li>Tags</li>
-          <li>Archives</li>
+          <li onclick="showAbout()">About</li>
           <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
           <li onclick="showProjects()">Projects</li>
           <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
@@ -218,90 +245,106 @@
       </div>
     </aside>
     <!-- SIDEBAR END -->
-
     <!-- MAIN CONTENT START -->
     <main class="content">
       <div id="main-content"></div>
     </main>
     <!-- MAIN CONTENT END -->
   </div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  const projects = [
+    {
+      name: "Spectrometry",
+      repo: "imabhivaibhav/edl.iitb",
+      readme: true
+    },
+    {
+      name: "Heart Failure Detector",
+      repo: "Imabhivaibhav/heart_failure",
+      readme: true
+    },
+    {
+      name: "Sample Project",
+      repo: "Imabhivaibhav/myproject",
+      readme: false
+    }
+  ];
 
-  <!-- Marked.js for markdown parsing -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    const projects = [
-      {
-        name: "Spectrometry",
-        repo: "imabhivaibhav/edl.iitb",
-        readme: true
-      },
-      {
-        name: "Heart Failure Detector",
-        repo: "Imabhivaibhav/heart_failure",
-        readme: true
-      },
-      {
-        name: "Sample Project",
-        repo: "Imabhivaibhav/myproject",
-        readme: false
-      }
-    ];
-
-    document.querySelectorAll('#nav-list li').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
-        item.classList.add('active');
-      });
+  // Highlight active sidebar item
+  document.querySelectorAll('#nav-list li').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
+      item.classList.add('active');
     });
+  });
 
-    function loadHome() {
-      document.getElementById('main-content').innerHTML = '';
-    }
+  // Load empty home content
+  function loadHome() {
+    document.getElementById('main-content').innerHTML = '';
+  }
 
-    function showProjects() {
-      let html = `<div class="projects-grid">`;
-      projects.forEach((proj, idx) => {
-        html += `<div class="project-card" onclick="loadProjectContent(${idx})">${proj.name}</div>`;
-      });
-      html += `</div>`;
-      document.getElementById('main-content').innerHTML = html;
-    }
+  // Show about card with personal details
+  function showAbout() {
+    const html = `
+      <div class="about-card">
+        <h1>Abhijeet Vaibhav</h1>
+        <p><strong>College:</strong> IIT Bombay</p>
+        <p><strong>Email:</strong> your.email@example.com</p>
+        <p><strong>Phone:</strong> +91 12345 67890</p>
+        <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourprofile" target="_blank" style="color:#60aaff;">linkedin.com/in/yourprofile</a></p>
+        <p><strong>GitHub:</strong> <a href="https://github.com/Imabhivaibhav" target="_blank" style="color:#60aaff;">github.com/Imabhivaibhav</a></p>
+        <p><strong>About me:</strong> Passionate about technology, AI, and software development. Always seeking to learn and share knowledge.</p>
+      </div>`;
+    document.getElementById('main-content').innerHTML = html;
+  }
 
-    function loadProjectContent(idx) {
-      const proj = projects[idx];
-      const mainContent = document.getElementById('main-content');
-      if (proj.readme) {
-        const url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
-        fetch(url)
-          .then(res => {
-            if(!res.ok) throw new Error('README not found');
-            return res.text();
-          })
-          .then(md => {
-            const html = marked.parse(md);
-            mainContent.style.color = '#ddd';
-            mainContent.innerHTML = html;
-          })
-          .catch(() => {
-            mainContent.style.color = '#ddd';
-            mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${proj.repo}</p>`;
-          });
-      } else {
-        const url = `https://raw.githubusercontent.com/${proj.repo}/main/index.html`;
-        fetch(url)
-          .then(res => {
-            if(!res.ok) throw new Error('Index not found');
-            return res.text();
-          })
-          .then(html => {
-            mainContent.style.color = '#ddd';
-            mainContent.innerHTML = html;
-          })
-          .catch(() => {
-            mainContent.innerHTML = `<p style="color:#f88;">Could not load index.html for repository: ${proj.repo}</p>`;
-          });
-      }
+  // Show project cards
+  function showProjects() {
+    let html = `<div class="projects-grid">`;
+    projects.forEach((proj, idx) => {
+      html += `<div class="project-card" onclick="loadProjectContent(${idx})">${proj.name}</div>`;
+    });
+    html += `</div>`;
+    document.getElementById('main-content').innerHTML = html;
+  }
+
+  // Load README or index.html of selected project
+  function loadProjectContent(idx) {
+    const proj = projects[idx];
+    const mainContent = document.getElementById('main-content');
+    if (proj.readme) {
+      const url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
+      fetch(url)
+        .then(res => {
+          if(!res.ok) throw new Error('README not found');
+          return res.text();
+        })
+        .then(md => {
+          const html = marked.parse(md);
+          mainContent.style.color = '#ddd';
+          mainContent.innerHTML = html;
+        })
+        .catch(() => {
+          mainContent.style.color = '#ddd';
+          mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${proj.repo}</p>`;
+        });
+    } else {
+      const url = `https://raw.githubusercontent.com/${proj.repo}/main/index.html`;
+      fetch(url)
+        .then(res => {
+          if(!res.ok) throw new Error('Index not found');
+          return res.text();
+        })
+        .then(html => {
+          mainContent.style.color = '#ddd';
+          mainContent.innerHTML = html;
+        })
+        .catch(() => {
+          mainContent.innerHTML = `<p style="color:#f88;">Could not load index.html for repository: ${proj.repo}</p>`;
+        });
     }
-  </script>
+  }
+</script>
 </body>
 </html>

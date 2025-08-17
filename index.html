@@ -1,11 +1,10 @@
-```html
-
-
-
-  
-  
-  Vaibhav - Unplugged corner
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vaibhav - Unplugged corner</title>
+  <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:400,700&display=swap');
 
     body {
@@ -211,79 +210,79 @@
         margin-bottom: 0;
       }
     }
-  
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile">
+        <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Vaibhav Avatar" class="avatar" />
+        <h2>Vaibhav</h2>
+        <p>Unplugged corner</p>
+      </div>
+      <nav>
+        <ul id="nav-list">
+          <li class="active" onclick="loadHome()">Home</li>
+          <li>About</li>
+          <li>Categories</li>
+          <li>Tags</li>
+          <li>Archives</li>
+          <li>Vaibhav - Resume</li>
 
+          <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
 
-  
-    
-    
-      
-        
-        Vaibhav
-        Unplugged corner
-      
-      
-        
-          Home
-          About
-          Categories
-          Tags
-          Archives
-          Vaibhav - Resume
+          <li onclick="loadRepoReadme('vaibhav28/portfolio')">Portfolio Repo</li>
+          <li onclick="loadRepoReadme('vaibhav28/notes')">Notes Repo</li>
+          <li onclick="loadRepoReadme('vaibhav28/sample-project')">Sample Project</li>
+        </ul>
+      </nav>
+      <div class="social" title="Social Links">
+        <span>✉️</span>
+        <span>🐙</span>
+        <span>🐦</span>
+        <span>🔗</span>
+      </div>
+    </aside>
 
-          
+    <!-- Main content and right sidebar -->
+    <main class="content">
+      <!-- Empty main content area -->
+      <div id="main-content"></div>
 
-          Portfolio Repo
-          Notes Repo
-          Sample Project
-        
-      
-      
-        ✉️
-        🐙
-        🐦
-        🔗
-      
-    
+      <aside class="rightbar">
+        <section class="recent-updates">
+          <h4>Recently Updated</h4>
+          <ul>
+            <li> A primer on Vector embeddings </li>
+            <li> git summary </li>
+            <li> Matrices gone Brrr. </li>
+            <li> Recurrent Neural Networks </li>
+            <li> LSTM </li>
+          </ul>
+        </section>
 
-    
-    
-      
-      
+        <section class="trending-tags">
+          <h4>Trending Tags</h4>
+          <div class="tags">
+            <span>machine-learning</span>
+            <span>Deep-learning</span>
+            <span>Git</span>
+            <span>LSTM</span>
+            <span>Mathematics</span>
+            <span>NLP</span>
+            <span>RNN</span>
+            <span>vector-embeddings</span>
+            <span>Version Control</span>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
 
-      
-        
-          Recently Updated
-          
-             A primer on Vector embeddings 
-             git summary 
-             Matrices gone Brrr. 
-             Recurrent Neural Networks 
-             LSTM 
-          
-        
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-        
-          Trending Tags
-          
-            machine-learning
-            Deep-learning
-            Git
-            LSTM
-            Mathematics
-            NLP
-            RNN
-            vector-embeddings
-            Version Control
-          
-        
-      
-    
-  
-
-  
-
-  
+  <script>
     // Highlight active nav item on click
     document.querySelectorAll('#nav-list li').forEach(item => {
       item.addEventListener('click', () => {
@@ -314,10 +313,9 @@
         })
         .catch(() => {
           mainContent.style.color = '#ddd';
-          mainContent.innerHTML = `Could not load README for repository: ${repoFullName}`;
+          mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${repoFullName}</p>`;
         });
     }
-  
-
-
-```
+  </script>
+</body>
+</html>

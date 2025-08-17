@@ -25,6 +25,7 @@
       flex-direction: column;
       align-items: center;
       box-sizing: border-box;
+      flex-shrink: 0; /* Prevent sidebar from shrinking */
     }
     .profile {
       text-align: center;
@@ -103,13 +104,17 @@
       padding: 42px 38px 36px 38px;
       gap: 38px;
       box-sizing: border-box;
+      overflow: hidden; /* Prevent horizontal scroll */
     }
     #main-content {
       flex: 3;
       overflow-y: auto;
       max-height: 100vh;
+      max-width: 100%; /* Prevent overflow horizontally */
+      box-sizing: border-box;
+      word-wrap: break-word; /* break long words if needed */
     }
-    /* Project cards styles */
+    /* Project cards */
     .projects-grid {
       display: flex;
       flex-wrap: wrap;
@@ -118,6 +123,8 @@
       align-items: flex-start;
       margin-top: 30px;
       margin-left: 10px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .project-card {
       background: #23272f;
@@ -134,12 +141,50 @@
       text-align: center;
       margin-bottom: 10px;
       border: 2px solid transparent;
+      word-break: break-word;
     }
     .project-card:hover {
       background: #282c34;
       border-color: #60aaff;
       transform: scale(1.05);
       color: #60aaff;
+    }
+    /* Markdown rendered content */
+    #main-content > * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    #main-content img,
+    #main-content table,
+    #main-content pre,
+    #main-content iframe {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      box-sizing: border-box;
+      margin-bottom: 1.5rem;
+    }
+    /* Responsive */
+    @media (max-width: 950px) {
+      .container {
+        flex-direction: column;
+      }
+      .content {
+        flex-direction: column;
+        padding: 24px 8px;
+        gap: 16px;
+        overflow: visible;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 12px 0;
+      }
+      #main-content {
+        max-height: none;
+      }
     }
   </style>
 </head>
@@ -156,11 +201,13 @@
         <ul id="nav-list">
           <li class="active" onclick="loadHome()">Home</li>
           <li>About</li>
+          <li>Categories</li>
+          <li>Tags</li>
+          <li>Archives</li>
           <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
           <li onclick="showProjects()">Projects</li>
           <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
           <li>Resume</li>
-          
         </ul>
       </nav>
       <div class="social" title="Social Links">
@@ -170,6 +217,7 @@
         <span>🔗</span>
       </div>
     </aside>
+    <!-- SIDEBAR END -->
 
     <!-- MAIN CONTENT START -->
     <main class="content">
@@ -178,14 +226,14 @@
     <!-- MAIN CONTENT END -->
   </div>
 
+  <!-- Marked.js for markdown parsing -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    // ----- CONFIG: List your project repos here -----
     const projects = [
       {
         name: "Spectrometry",
         repo: "imabhivaibhav/edl.iitb",
-        readme: true  // true: load README.md; false: load index.html
+        readme: true
       },
       {
         name: "Heart Failure Detector",
@@ -195,11 +243,10 @@
       {
         name: "Sample Project",
         repo: "Imabhivaibhav/myproject",
-        readme: false // load index.html if exists
+        readme: false
       }
     ];
 
-    // Highlight active sidebar item
     document.querySelectorAll('#nav-list li').forEach(item => {
       item.addEventListener('click', () => {
         document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
@@ -207,12 +254,10 @@
       });
     });
 
-    // Blank home page
     function loadHome() {
       document.getElementById('main-content').innerHTML = '';
     }
 
-    // Show project cards in main content
     function showProjects() {
       let html = `<div class="projects-grid">`;
       projects.forEach((proj, idx) => {
@@ -222,35 +267,31 @@
       document.getElementById('main-content').innerHTML = html;
     }
 
-    // Load README.md or index.html for a repo
     function loadProjectContent(idx) {
       const proj = projects[idx];
       const mainContent = document.getElementById('main-content');
-      let url;
-
       if (proj.readme) {
-        // Try to load README.md
-        url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
+        const url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
         fetch(url)
-          .then(response => {
-            if (!response.ok) throw new Error('README not found');
-            return response.text();
+          .then(res => {
+            if(!res.ok) throw new Error('README not found');
+            return res.text();
           })
-          .then(markdown => {
-            const html = marked.parse(markdown);
+          .then(md => {
+            const html = marked.parse(md);
             mainContent.style.color = '#ddd';
             mainContent.innerHTML = html;
           })
           .catch(() => {
+            mainContent.style.color = '#ddd';
             mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${proj.repo}</p>`;
           });
       } else {
-        // Try to load index.html (will be displayed as raw HTML)
-        url = `https://raw.githubusercontent.com/${proj.repo}/main/index.html`;
+        const url = `https://raw.githubusercontent.com/${proj.repo}/main/index.html`;
         fetch(url)
-          .then(response => {
-            if (!response.ok) throw new Error('Index not found');
-            return response.text();
+          .then(res => {
+            if(!res.ok) throw new Error('Index not found');
+            return res.text();
           })
           .then(html => {
             mainContent.style.color = '#ddd';
@@ -264,4 +305,3 @@
   </script>
 </body>
 </html>
-

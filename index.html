@@ -123,23 +123,10 @@
     #main-content {
       flex: 3;
       overflow-y: auto;
-      padding-right: 16px;
       max-height: 100vh;
-      /* Empty initially */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #7e879d;
-      font-size: 1.2rem;
-      font-style: italic;
-      user-select: none;
-    }
-
-    /* Empty default text style */
-    #main-content.empty::before {
-      content: "Select a repository from the sidebar to load its README here.";
-      text-align: center;
-      width: 100%;
+      /* Fully empty center */
+      background: transparent;
+      color: transparent; /* hide any text */
     }
 
     .rightbar {
@@ -297,10 +284,9 @@
   
 
   
-  
 
   
-    // Remove .active class from all sidebar nav items and add to clicked
+    // Sidebar active state toggle
     document.querySelectorAll('#nav-list li').forEach(item => {
       item.addEventListener('click', () => {
         document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
@@ -308,136 +294,31 @@
       });
     });
 
-    // Load Home (initial posts list)
+    // No default content or posts loaded initially
     function loadHome() {
-      // Set active class to Home nav
-      const navItems = document.querySelectorAll('#nav-list li');
-      navItems.forEach(li => li.classList.remove('active'));
-      navItems[0].classList.add('active');
-
-      // Insert home posts content or clear main content for empty center
-      document.getElementById('main-content').classList.remove('empty');
-      document.getElementById('main-content').innerHTML = `
-        
-          
-            git summary
-            What is a Git repository? A Git repository is a virtual storage of your project. It allows you to save versions of your code, which you can access when needed. Workflow your local repository...
-            
-              Apr 9, 2024
-              Software Engineering
-            
-          
-          
-            LSTM
-            Why do we need LSTM? RNNs, Although take past 'context' into consideration. They do suffer the problem of Vanishing or Exploding gradient problem. Simply put, the gradient is calculated in any...
-            
-              Aug 1, 2023
-              AI
-            
-          
-          
-            Recurrent Neural Networks
-            Introduction: One of the most plausible analogy for RNNs: Humans don’t start their thinking from scratch every second. As you read this essay, you understand each word based on your...
-            
-              Jul 15, 2023
-              AI
-            
-          
-          
-            A primer on Vector embeddings
-            A primer on Vector embeddings. Let’s rollback to the times when transformers didn’t exist. Finding the contextual meaning of a word in a sentence was a much harder task. Getting contextual simila...
-            
-              Jun 9, 2023
-              AI
-            
-          
-        
-      `;
+      document.getElementById('main-content').innerHTML = '';
     }
 
-    // Load README.md content of a repo in main content area
+    // Function to load README to center — will overwrite content, so works dynamically
     function loadRepoReadme(repoFullName) {
       const rawUrl = `https://raw.githubusercontent.com/${repoFullName}/main/README.md`;
-
-      // Remove 'empty' class to show content area
       const mainContent = document.getElementById('main-content');
-      mainContent.classList.remove('empty');
-
+      
       fetch(rawUrl)
         .then(response => {
-          if (!response.ok) {
-            throw new Error('README not found');
-          }
+          if (!response.ok) throw new Error('README not found');
           return response.text();
         })
         .then(markdown => {
           const html = marked.parse(markdown);
-
-          // Count words and estimate reading time
-          const words = markdown.trim().split(/\s+/).length;
-          const readTime = Math.max(1, Math.ceil(words / 200));
-
-          // Create breadcrumb and meta info
-          const repoName = repoFullName.split('/')[1];
-          const authorName = repoFullName.split('/')[0];
-          const todayLocale = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
-
-          // Generate Table of Contents from markdown headings h2 and h3
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = html;
-          const headings = tempDiv.querySelectorAll('h2, h3');
-          let tocHtml = '';
-          headings.forEach((h, i) => {
-            const id = 'section-' + i;
-            h.id = id;
-            tocHtml += `${h.textContent}`;
-          });
-
-          // Final HTML for main content area
-          const postContent = `
-            Home › ${repoName}
-            ${repoName}
-            
-              Posted ${todayLocale}
-              By ${authorName}
-              ${readTime} min read
-              ${words} words
-            
-
-            
-              Contents
-              ${tocHtml}
-            
-
-            ${tempDiv.innerHTML}
-          `;
-
-          mainContent.innerHTML = postContent;
-
-          // Add click listeners to TOC links to add active style
-          const tocLinks = document.querySelectorAll('.contents-nav ul li a');
-          tocLinks.forEach(link => {
-            link.addEventListener('click', function() {
-              tocLinks.forEach(l => l.classList.remove('active'));
-              this.classList.add('active');
-            });
-          });
+          mainContent.style.color = '#ddd'; // Restore visible text color
+          mainContent.innerHTML = html;
         })
         .catch(() => {
-          mainContent.innerHTML = `
-            
-              Could not load README for repository: ${repoFullName}
-            
-          `;
+          mainContent.style.color = '#ddd';
+          mainContent.innerHTML = `Could not load README for repository: ${repoFullName}`;
         });
     }
-
-    // Initially show empty main-content with placeholder
-    document.addEventListener('DOMContentLoaded', () => {
-      const mainContent = document.getElementById('main-content');
-      mainContent.classList.add('empty');
-      mainContent.innerHTML = '';
-    });
   
 
 

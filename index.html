@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Vaibhav - Unplugged corner</title>
   <style>
+    /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css?family=Inter:400,700&display=swap');
 
+    /* Global styles */
     body {
       background: #181a20;
       color: #ddd;
@@ -15,11 +17,13 @@
       padding: 0;
     }
 
+    /* Container for sidebar and content */
     .container {
       display: flex;
       height: 100vh;
     }
 
+    /* Sidebar styles */
     .sidebar {
       width: 250px;
       background: #20232a;
@@ -30,12 +34,14 @@
       box-sizing: border-box;
     }
 
+    /* Profile section in sidebar */
     .profile {
       text-align: center;
       margin-bottom: 32px;
       width: 100%;
     }
 
+    /* Avatar image styling */
     .avatar {
       width: 88px;
       height: 88px;
@@ -49,6 +55,7 @@
       margin-right: auto;
     }
 
+    /* Name below avatar */
     .profile h2 {
       margin: 0;
       font-size: 1.3rem;
@@ -56,6 +63,7 @@
       font-weight: 700;
     }
 
+    /* Subtitle "Unplugged corner" */
     .profile p {
       margin: 4px 0 0 0;
       font-size: 1rem;
@@ -64,11 +72,13 @@
       font-weight: 400;
     }
 
+    /* Sidebar navigation list container */
     .sidebar nav {
       width: 100%;
       margin-bottom: 24px;
     }
 
+    /* Remove default list styling */
     .sidebar nav ul {
       list-style: none;
       margin: 0;
@@ -76,6 +86,7 @@
       width: 100%;
     }
 
+    /* Individual sidebar navigation items */
     .sidebar nav ul li {
       padding: 12px 0 12px 24px;
       font-size: 1rem;
@@ -89,17 +100,20 @@
       user-select: none;
     }
 
+    /* Hover effect on sidebar items */
     .sidebar nav ul li:hover {
       background: #3a3f51;
       color: #60aaff;
     }
 
+    /* Active sidebar item styling */
     .sidebar nav ul .active {
       background: #282c34;
       color: #60aaff;
       font-weight: 700;
     }
 
+    /* Social icons container */
     .social {
       display: flex;
       gap: 16px;
@@ -110,6 +124,7 @@
       justify-content: center;
     }
 
+    /* Main content and sidebar container */
     .content {
       display: flex;
       justify-content: stretch;
@@ -119,110 +134,29 @@
       box-sizing: border-box;
     }
 
-    /* Completely empty main content area with no content inside */
+    /* Main content area */
     #main-content {
       flex: 3;
       overflow-y: auto;
       max-height: 100vh;
     }
-
-    .rightbar {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 26px;
-      min-width: 270px;
-      max-width: 340px;
-      box-sizing: border-box;
-    }
-
-    .rightbar section {
-      background: #23272f;
-      border-radius: 14px;
-      padding: 20px 20px;
-    }
-
-    .rightbar h4 {
-      color: #fff;
-      margin: 0 0 13px 0;
-      font-size: 1.08rem;
-      font-weight: 600;
-    }
-
-    .recent-updates ul,
-    .trending-tags .tags {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .recent-updates ul li {
-      padding: 6px 0;
-      font-size: 0.99rem;
-      color: #b3bbc6;
-      border-bottom: 1px solid #262930;
-      cursor: pointer;
-    }
-
-    .recent-updates ul li:last-child {
-      border-bottom: none;
-    }
-
-    .recent-updates ul li:hover {
-      color: #60aaff;
-    }
-
-    .trending-tags .tags span {
-      display: inline-block;
-      background: #28272f;
-      color: #fff;
-      font-size: 0.93rem;
-      margin: 4px 7px 4px 0;
-      padding: 6px 14px;
-      border-radius: 18px;
-      font-weight: 500;
-      user-select: none;
-    }
-
-    /* Responsive */
-    @media (max-width: 950px) {
-      .container {
-        flex-direction: column;
-      }
-      .content {
-        flex-direction: column;
-        padding: 24px 8px;
-        gap: 16px;
-      }
-      .rightbar {
-        min-width: 100%;
-        max-width: 100%;
-        gap: 16px;
-      }
-      .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 12px 0;
-      }
-      .profile {
-        margin-bottom: 0;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar -->
+    <!-- SIDEBAR START -->
     <aside class="sidebar">
       <div class="profile">
+        <!-- EDIT YOUR AVATAR IMAGE URL HERE -->
         <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Vaibhav Avatar" class="avatar" />
+        <!-- EDIT YOUR NAME HERE -->
         <h2>Vaibhav</h2>
+        <!-- EDIT YOUR SUBTITLE HERE -->
         <p>Unplugged corner</p>
       </div>
       <nav>
         <ul id="nav-list">
+          <!-- EDIT SIDEBAR NAVIGATION ITEMS BELOW -->
           <li class="active" onclick="loadHome()">Home</li>
           <li>About</li>
           <li>Categories</li>
@@ -232,11 +166,13 @@
 
           <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
 
+          <!-- REPOSITORY LINKS; update repo names & user -->
           <li onclick="loadRepoReadme('vaibhav28/portfolio')">Portfolio Repo</li>
           <li onclick="loadRepoReadme('vaibhav28/notes')">Notes Repo</li>
           <li onclick="loadRepoReadme('vaibhav28/sample-project')">Sample Project</li>
         </ul>
       </nav>
+      <!-- SOCIAL ICONS, add/remove as you like -->
       <div class="social" title="Social Links">
         <span>✉️</span>
         <span>🐙</span>
@@ -244,46 +180,21 @@
         <span>🔗</span>
       </div>
     </aside>
+    <!-- SIDEBAR END -->
 
-    <!-- Main content and right sidebar -->
+    <!-- MAIN CONTENT START -->
     <main class="content">
-      <!-- Empty main content area -->
+      <!-- CENTER AREA: LEAVE EMPTY INITIALLY -->
       <div id="main-content"></div>
-
-      <aside class="rightbar">
-        <section class="recent-updates">
-          <h4>Recently Updated</h4>
-          <ul>
-            <li> A primer on Vector embeddings </li>
-            <li> git summary </li>
-            <li> Matrices gone Brrr. </li>
-            <li> Recurrent Neural Networks </li>
-            <li> LSTM </li>
-          </ul>
-        </section>
-
-        <section class="trending-tags">
-          <h4>Trending Tags</h4>
-          <div class="tags">
-            <span>machine-learning</span>
-            <span>Deep-learning</span>
-            <span>Git</span>
-            <span>LSTM</span>
-            <span>Mathematics</span>
-            <span>NLP</span>
-            <span>RNN</span>
-            <span>vector-embeddings</span>
-            <span>Version Control</span>
-          </div>
-        </section>
-      </aside>
     </main>
+    <!-- MAIN CONTENT END -->
   </div>
 
+  <!-- Marked.js Library for Markdown parsing -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <script>
-    // Highlight active nav item on click
+    // Highlight active sidebar link on click
     document.querySelectorAll('#nav-list li').forEach(item => {
       item.addEventListener('click', () => {
         document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
@@ -291,12 +202,12 @@
       });
     });
 
-    // Load homepage: here just empty to keep center blank
+    // Initially, center area is empty
     function loadHome() {
       document.getElementById('main-content').innerHTML = '';
     }
 
-    // Load README.md content of a repo into main content area
+    // Load README.md of a repo into main content area dynamically
     function loadRepoReadme(repoFullName) {
       const rawUrl = `https://raw.githubusercontent.com/${repoFullName}/main/README.md`;
       const mainContent = document.getElementById('main-content');
@@ -308,7 +219,7 @@
         })
         .then(markdown => {
           const html = marked.parse(markdown);
-          mainContent.style.color = '#ddd'; // Make sure text is visible
+          mainContent.style.color = '#ddd';  // Ensure text is visible
           mainContent.innerHTML = html;
         })
         .catch(() => {

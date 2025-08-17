@@ -120,13 +120,11 @@
       box-sizing: border-box;
     }
 
+    /* Completely empty main content area with no content inside */
     #main-content {
       flex: 3;
       overflow-y: auto;
       max-height: 100vh;
-      /* Fully empty center */
-      background: transparent;
-      color: transparent; /* hide any text */
     }
 
     .rightbar {
@@ -286,7 +284,7 @@
   
 
   
-    // Sidebar active state toggle
+    // Highlight active nav item on click
     document.querySelectorAll('#nav-list li').forEach(item => {
       item.addEventListener('click', () => {
         document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
@@ -294,16 +292,16 @@
       });
     });
 
-    // No default content or posts loaded initially
+    // Load homepage: here just empty to keep center blank
     function loadHome() {
       document.getElementById('main-content').innerHTML = '';
     }
 
-    // Function to load README to center — will overwrite content, so works dynamically
+    // Load README.md content of a repo into main content area
     function loadRepoReadme(repoFullName) {
       const rawUrl = `https://raw.githubusercontent.com/${repoFullName}/main/README.md`;
       const mainContent = document.getElementById('main-content');
-      
+
       fetch(rawUrl)
         .then(response => {
           if (!response.ok) throw new Error('README not found');
@@ -311,7 +309,7 @@
         })
         .then(markdown => {
           const html = marked.parse(markdown);
-          mainContent.style.color = '#ddd'; // Restore visible text color
+          mainContent.style.color = '#ddd'; // Make sure text is visible
           mainContent.innerHTML = html;
         })
         .catch(() => {

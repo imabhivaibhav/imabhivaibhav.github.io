@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Abhijeet Vaibhav</title>
+  <title>Vaibhav - Unplugged corner</title>
   <style>
-    /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css?family=Inter:400,700&display=swap');
-
-    /* Global styles */
     body {
       background: #181a20;
       color: #ddd;
@@ -16,14 +13,10 @@
       margin: 0;
       padding: 0;
     }
-
-    /* Container for sidebar and content */
     .container {
       display: flex;
       height: 100vh;
     }
-
-    /* Sidebar styles */
     .sidebar {
       width: 250px;
       background: #20232a;
@@ -33,15 +26,11 @@
       align-items: center;
       box-sizing: border-box;
     }
-
-    /* Profile section in sidebar */
     .profile {
       text-align: center;
       margin-bottom: 32px;
       width: 100%;
     }
-
-    /* Avatar image styling */
     .avatar {
       width: 88px;
       height: 88px;
@@ -54,16 +43,12 @@
       margin-left: auto;
       margin-right: auto;
     }
-
-    /* Name below avatar */
     .profile h2 {
       margin: 0;
       font-size: 1.3rem;
       color: #fff;
       font-weight: 700;
     }
-
-    /* Subtitle "Unplugged corner" */
     .profile p {
       margin: 4px 0 0 0;
       font-size: 1rem;
@@ -71,22 +56,16 @@
       font-style: italic;
       font-weight: 400;
     }
-
-    /* Sidebar navigation list container */
     .sidebar nav {
       width: 100%;
       margin-bottom: 24px;
     }
-
-    /* Remove default list styling */
     .sidebar nav ul {
       list-style: none;
       margin: 0;
       padding: 0;
       width: 100%;
     }
-
-    /* Individual sidebar navigation items */
     .sidebar nav ul li {
       padding: 12px 0 12px 24px;
       font-size: 1rem;
@@ -99,21 +78,15 @@
       text-align: left;
       user-select: none;
     }
-
-    /* Hover effect on sidebar items */
     .sidebar nav ul li:hover {
       background: #3a3f51;
       color: #60aaff;
     }
-
-    /* Active sidebar item styling */
     .sidebar nav ul .active {
       background: #282c34;
       color: #60aaff;
       font-weight: 700;
     }
-
-    /* Social icons container */
     .social {
       display: flex;
       gap: 16px;
@@ -123,8 +96,6 @@
       font-size: 1.22rem;
       justify-content: center;
     }
-
-    /* Main content and sidebar container */
     .content {
       display: flex;
       justify-content: stretch;
@@ -133,12 +104,42 @@
       gap: 38px;
       box-sizing: border-box;
     }
-
-    /* Main content area */
     #main-content {
       flex: 3;
       overflow-y: auto;
       max-height: 100vh;
+    }
+    /* Project cards styles */
+    .projects-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin-top: 30px;
+      margin-left: 10px;
+    }
+    .project-card {
+      background: #23272f;
+      border-radius: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 32px 44px;
+      font-size: 1.25rem;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.15s;
+      min-width: 180px;
+      max-width: 320px;
+      text-align: center;
+      margin-bottom: 10px;
+      border: 2px solid transparent;
+    }
+    .project-card:hover {
+      background: #282c34;
+      border-color: #60aaff;
+      transform: scale(1.05);
+      color: #60aaff;
     }
   </style>
 </head>
@@ -147,30 +148,23 @@
     <!-- SIDEBAR START -->
     <aside class="sidebar">
       <div class="profile">
-        <!-- EDIT YOUR AVATAR IMAGE URL HERE -->
         <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Vaibhav Avatar" class="avatar" />
-        <!-- EDIT YOUR NAME HERE -->
-        <h2>Abhijeet Vaibhav</h2>
-        <!-- EDIT YOUR SUBTITLE HERE -->
+        <h2>Vaibhav</h2>
         <p>Unplugged corner</p>
       </div>
       <nav>
         <ul id="nav-list">
-          <!-- EDIT SIDEBAR NAVIGATION ITEMS BELOW -->
           <li class="active" onclick="loadHome()">Home</li>
           <li>About</li>
-          <li>Projects</li>
-          <li>Resume</li>
-
+          <li>Categories</li>
+          <li>Tags</li>
+          <li>Archives</li>
+          <li>Vaibhav - Resume</li>
           <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
-
-          <!-- REPOSITORY LINKS; update repo names & user -->
-          <li onclick="loadRepoReadme('Imabhivaibhav/edl.iitb')">Portfolio Repo</li>
-          <li onclick="loadRepoReadme('vaibhav28/notes')">Notes Repo</li>
-          <li onclick="loadRepoReadme('vaibhav28/sample-project')">Sample Project</li>
+          <!-- Project Button below -->
+          <li onclick="showProjects()">Projects</li>
         </ul>
       </nav>
-      <!-- SOCIAL ICONS, add/remove as you like -->
       <div class="social" title="Social Links">
         <span>✉️</span>
         <span>🐙</span>
@@ -178,21 +172,36 @@
         <span>🔗</span>
       </div>
     </aside>
-    <!-- SIDEBAR END -->
 
     <!-- MAIN CONTENT START -->
     <main class="content">
-      <!-- CENTER AREA: LEAVE EMPTY INITIALLY -->
       <div id="main-content"></div>
     </main>
     <!-- MAIN CONTENT END -->
   </div>
 
-  <!-- Marked.js Library for Markdown parsing -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
   <script>
-    // Highlight active sidebar link on click
+    // ----- CONFIG: List your project repos here -----
+    const projects = [
+      {
+        name: "Portfolio Repo",
+        repo: "vaibhav28/portfolio",
+        readme: true  // true: load README.md; false: load index.html
+      },
+      {
+        name: "Notes Repo",
+        repo: "vaibhav28/notes",
+        readme: true
+      },
+      {
+        name: "Sample Project",
+        repo: "vaibhav28/sample-project",
+        readme: false // load index.html if exists
+      }
+    ];
+
+    // Highlight active sidebar item
     document.querySelectorAll('#nav-list li').forEach(item => {
       item.addEventListener('click', () => {
         document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
@@ -200,33 +209,60 @@
       });
     });
 
-    // Initially, center area is empty
+    // Blank home page
     function loadHome() {
       document.getElementById('main-content').innerHTML = '';
     }
 
-    // Load README.md of a repo into main content area dynamically
-    function loadRepoReadme(repoFullName) {
-      const rawUrl = `https://raw.githubusercontent.com/${repoFullName}/main/README.md`;
-      const mainContent = document.getElementById('main-content');
+    // Show project cards in main content
+    function showProjects() {
+      let html = `<div class="projects-grid">`;
+      projects.forEach((proj, idx) => {
+        html += `<div class="project-card" onclick="loadProjectContent(${idx})">${proj.name}</div>`;
+      });
+      html += `</div>`;
+      document.getElementById('main-content').innerHTML = html;
+    }
 
-      fetch(rawUrl)
-        .then(response => {
-          if (!response.ok) throw new Error('README not found');
-          return response.text();
-        })
-        .then(markdown => {
-          const html = marked.parse(markdown);
-          mainContent.style.color = '#ddd';  // Ensure text is visible
-          mainContent.innerHTML = html;
-        })
-        .catch(() => {
-          mainContent.style.color = '#ddd';
-          mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${repoFullName}</p>`;
-        });
+    // Load README.md or index.html for a repo
+    function loadProjectContent(idx) {
+      const proj = projects[idx];
+      const mainContent = document.getElementById('main-content');
+      let url;
+
+      if (proj.readme) {
+        // Try to load README.md
+        url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
+        fetch(url)
+          .then(response => {
+            if (!response.ok) throw new Error('README not found');
+            return response.text();
+          })
+          .then(markdown => {
+            const html = marked.parse(markdown);
+            mainContent.style.color = '#ddd';
+            mainContent.innerHTML = html;
+          })
+          .catch(() => {
+            mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${proj.repo}</p>`;
+          });
+      } else {
+        // Try to load index.html (will be displayed as raw HTML)
+        url = `https://raw.githubusercontent.com/${proj.repo}/main/index.html`;
+        fetch(url)
+          .then(response => {
+            if (!response.ok) throw new Error('Index not found');
+            return response.text();
+          })
+          .then(html => {
+            mainContent.style.color = '#ddd';
+            mainContent.innerHTML = html;
+          })
+          .catch(() => {
+            mainContent.innerHTML = `<p style="color:#f88;">Could not load index.html for repository: ${proj.repo}</p>`;
+          });
+      }
     }
   </script>
 </body>
 </html>
-
-

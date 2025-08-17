@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Vaibhav - Unplugged corner</title>
   <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:400,700&display=swap');
+
     body {
       background: #181a20;
       color: #ddd;
@@ -13,10 +14,12 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
       display: flex;
       height: 100vh;
     }
+
     .sidebar {
       width: 250px;
       background: #20232a;
@@ -24,11 +27,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      box-sizing: border-box;
     }
+
     .profile {
       text-align: center;
       margin-bottom: 32px;
+      width: 100%;
     }
+
     .avatar {
       width: 88px;
       height: 88px;
@@ -38,29 +45,37 @@
       border: 3px solid #fff;
       background: #616262;
       display: block;
-      margin: 0 auto 12px auto;
+      margin-left: auto;
+      margin-right: auto;
     }
+
     .profile h2 {
       margin: 0;
       font-size: 1.3rem;
       color: #fff;
+      font-weight: 700;
     }
+
     .profile p {
       margin: 4px 0 0 0;
       font-size: 1rem;
       color: #b3bbc6;
+      font-style: italic;
+      font-weight: 400;
     }
 
     .sidebar nav {
       width: 100%;
       margin-bottom: 24px;
     }
+
     .sidebar nav ul {
       list-style: none;
       margin: 0;
       padding: 0;
       width: 100%;
     }
+
     .sidebar nav ul li {
       padding: 12px 0 12px 24px;
       font-size: 1rem;
@@ -68,14 +83,23 @@
       cursor: pointer;
       border-radius: 6px;
       margin: 0 0 6px 0;
-      transition: background 0.2s;
+      transition: background 0.2s ease-in-out;
       width: 92%;
       text-align: left;
+      user-select: none;
     }
+
+    .sidebar nav ul li:hover {
+      background: #3a3f51;
+      color: #60aaff;
+    }
+
     .sidebar nav ul .active {
       background: #282c34;
-      color: #fff;
+      color: #60aaff;
+      font-weight: 700;
     }
+
     .social {
       display: flex;
       gap: 16px;
@@ -85,19 +109,30 @@
       font-size: 1.22rem;
       justify-content: center;
     }
+
     .content {
       display: flex;
       justify-content: stretch;
       flex: 1;
       padding: 42px 38px 36px 38px;
       gap: 38px;
+      box-sizing: border-box;
     }
-    .posts {
+
+    #main-content {
       flex: 3;
+      overflow-y: auto;
+      padding-right: 16px;
+      max-height: 100vh;
+    }
+
+    /* Default home posts container styles */
+    .posts {
       display: flex;
       flex-direction: column;
       gap: 26px;
     }
+
     .post {
       background: #23272f;
       padding: 26px 28px 18px 28px;
@@ -106,26 +141,43 @@
       margin-bottom: 2px;
       transition: background 0.2s;
     }
+
     .post:hover {
       background: #282c34;
     }
-    .post h3 {
+
+    .post h3, #main-content h1 {
       margin: 0 0 12px 0;
-      font-size: 1.35rem;
       color: #fff;
-      font-weight: 600;
+      font-weight: 700;
     }
-    .post p {
+
+    .post h3 {
+      font-size: 1.35rem;
+    }
+
+    #main-content h1 {
+      font-size: 2.1rem;
+      margin-bottom: 8px;
+    }
+
+    .post p, #main-content p {
       margin: 0 0 12px 0;
       color: #b3bbc6;
       font-size: 1.04rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
     }
-    .post .meta {
+
+    .post .meta, #main-content .meta {
       font-size: 0.89rem;
       color: #7e879d;
+      margin-bottom: 24px;
       display: flex;
-      gap: 22px;
+      gap: 24px;
+      align-items: center;
     }
+
     .rightbar {
       flex: 1;
       display: flex;
@@ -133,33 +185,45 @@
       gap: 26px;
       min-width: 270px;
       max-width: 340px;
+      box-sizing: border-box;
     }
+
     .rightbar section {
       background: #23272f;
       border-radius: 14px;
       padding: 20px 20px;
     }
+
     .rightbar h4 {
       color: #fff;
       margin: 0 0 13px 0;
       font-size: 1.08rem;
       font-weight: 600;
     }
+
     .recent-updates ul,
     .trending-tags .tags {
       list-style: none;
       padding: 0;
       margin: 0;
     }
+
     .recent-updates ul li {
       padding: 6px 0;
       font-size: 0.99rem;
       color: #b3bbc6;
       border-bottom: 1px solid #262930;
+      cursor: pointer;
     }
+
     .recent-updates ul li:last-child {
       border-bottom: none;
     }
+
+    .recent-updates ul li:hover {
+      color: #60aaff;
+    }
+
     .trending-tags .tags span {
       display: inline-block;
       background: #282c34;
@@ -169,7 +233,97 @@
       padding: 6px 14px;
       border-radius: 18px;
       font-weight: 500;
+      user-select: none;
     }
+
+    .breadcrumb {
+      color: #b3bbc6;
+      margin-bottom: 14px;
+      font-size: 1rem;
+      user-select: none;
+    }
+
+    .breadcrumb a {
+      color: #60aaff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .contents-nav {
+      background: #23272f;
+      border-radius: 9px;
+      padding: 18px 18px;
+      margin-bottom: 32px;
+      max-width: 320px;
+      color: #b3bbc6;
+      user-select: none;
+    }
+
+    .contents-nav h4 {
+      font-size: 1.05rem;
+      color: #fff;
+      margin: 0 0 8px 0;
+    }
+
+    .contents-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .contents-nav ul li {
+      margin-bottom: 6px;
+    }
+
+    .contents-nav ul li a {
+      color: #b3bbc6;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .contents-nav ul li a.active,
+    .contents-nav ul li a:hover {
+      color: #60aaff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #post-body {
+      font-size: 1.15rem;
+      color: #ddd;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    /* Scroll styling for main content area */
+    #main-content::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    #main-content::-webkit-scrollbar-track {
+      background: #20232a;
+      border-radius: 10px;
+    }
+
+    #main-content::-webkit-scrollbar-thumb {
+      background-color: #60aaff;
+      border-radius: 10px;
+    }
+
+    /* Pagination placeholder style */
+    .pagination {
+      margin: 22px 0;
+      color: #b3bbc6;
+      text-align: center;
+      font-size: 1.1rem;
+      user-select: none;
+    }
+
+    /* Responsive */
     @media (max-width: 950px) {
       .container {
         flex-direction: column;
@@ -177,11 +331,12 @@
       .content {
         flex-direction: column;
         padding: 24px 8px;
+        gap: 16px;
       }
       .rightbar {
-        gap: 16px;
         min-width: 100%;
         max-width: 100%;
+        gap: 16px;
       }
       .sidebar {
         width: 100%;
@@ -198,74 +353,89 @@
 </head>
 <body>
   <div class="container">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="profile">
-        <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Vaibhav Avatar" class="avatar">
+        <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Vaibhav Avatar" class="avatar" />
         <h2>Vaibhav</h2>
         <p>Unplugged corner</p>
       </div>
       <nav>
-        <ul>
-          <li class="active">Home</li>
+        <ul id="nav-list">
+          <li class="active" onclick="loadHome()">Home</li>
           <li>About</li>
           <li>Categories</li>
           <li>Tags</li>
           <li>Archives</li>
           <li>Vaibhav - Resume</li>
+
+          <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
+
+          <li onclick="loadRepoReadme('vaibhav28/portfolio')">Portfolio Repo</li>
+          <li onclick="loadRepoReadme('vaibhav28/notes')">Notes Repo</li>
+          <li onclick="loadRepoReadme('vaibhav28/sample-project')">Sample Project</li>
         </ul>
       </nav>
-      <div class="social">
-        <span title="Mail">✉️</span>
-        <span title="GitHub">🐙</span>
-        <span title="Twitter">🐦</span>
-        <span title="LinkedIn">🔗</span>
+      <div class="social" title="Social Links">
+        <span>✉️</span>
+        <span>🐙</span>
+        <span>🐦</span>
+        <span>🔗</span>
       </div>
     </aside>
+
+    <!-- Main content and right sidebar -->
     <main class="content">
-      <div class="posts">
-        <div class="post">
-          <h3>git summary</h3>
-          <p>What is a Git repository? A Git repository is a virtual storage of your project. It allows you to save versions of your code, which you can access when needed. Workflow your local repository...</p>
-          <div class="meta">
-            <span>Apr 9, 2024</span>
-            <span>Software Engineering</span>
+      <div id="main-content">
+        <!-- Initial posts (Home) content - mimic your original posts view -->
+        <div class="posts">
+          <div class="post">
+            <h3>git summary</h3>
+            <p>What is a Git repository? A Git repository is a virtual storage of your project. It allows you to save versions of your code, which you can access when needed. Workflow your local repository...</p>
+            <div class="meta">
+              <span>Apr 9, 2024</span>
+              <span>Software Engineering</span>
+            </div>
           </div>
-        </div>
-        <div class="post">
-          <h3>LSTM</h3>
-          <p>Why do we need LSTM? RNNs, Although take past 'context' into consideration. They do suffer the problem of Vanishing or Exploding gradient problem. Simply put, the gradient is calculated in any...</p>
-          <div class="meta">
-            <span>Aug 1, 2023</span>
-            <span>AI</span>
+          <div class="post">
+            <h3>LSTM</h3>
+            <p>Why do we need LSTM? RNNs, Although take past 'context' into consideration. They do suffer the problem of Vanishing or Exploding gradient problem. Simply put, the gradient is calculated in any...</p>
+            <div class="meta">
+              <span>Aug 1, 2023</span>
+              <span>AI</span>
+            </div>
           </div>
-        </div>
-        <div class="post">
-          <h3>Recurrent Neural Networks</h3>
-          <p>Introduction: One of the most plausible analogy for RNNs: Humans don’t start their thinking from scratch every second. As you read this essay, you understand each word based on your...</p>
-          <div class="meta">
-            <span>Jul 15, 2023</span>
-            <span>AI</span>
+          <div class="post">
+            <h3>Recurrent Neural Networks</h3>
+            <p>Introduction: One of the most plausible analogy for RNNs: Humans don’t start their thinking from scratch every second. As you read this essay, you understand each word based on your...</p>
+            <div class="meta">
+              <span>Jul 15, 2023</span>
+              <span>AI</span>
+            </div>
           </div>
-        </div>
-        <div class="post">
-          <h3>A primer on Vector embeddings</h3>
-          <p>A primer on Vector embeddings. Let’s rollback to the times when transformers didn’t exist. Finding the contextual meaning of a word in a sentence was a much harder task. Getting contextual simila...</p>
-          <div class="meta">
-            <span>Jun 9, 2023</span>
-            <span>AI</span>
+          <div class="post">
+            <h3>A primer on Vector embeddings</h3>
+            <p>A primer on Vector embeddings. Let’s rollback to the times when transformers didn’t exist. Finding the contextual meaning of a word in a sentence was a much harder task. Getting contextual simila...</p>
+            <div class="meta">
+              <span>Jun 9, 2023</span>
+              <span>AI</span>
+            </div>
           </div>
         </div>
       </div>
+
       <aside class="rightbar">
         <section class="recent-updates">
           <h4>Recently Updated</h4>
           <ul>
-            <li>A primer on Vector embeddings</li>
-            <li>Recurrent Neural Networks</li>
-            <li>LSTM</li>
-            <li>git summary</li>
+            <li> A primer on Vector embeddings </li>
+            <li> git summary </li>
+            <li> Matrices gone Brrr. </li>
+            <li> Recurrent Neural Networks </li>
+            <li> LSTM </li>
           </ul>
         </section>
+
         <section class="trending-tags">
           <h4>Trending Tags</h4>
           <div class="tags">
@@ -273,6 +443,7 @@
             <span>Deep-learning</span>
             <span>Git</span>
             <span>LSTM</span>
+            <span>Mathematics</span>
             <span>NLP</span>
             <span>RNN</span>
             <span>vector-embeddings</span>
@@ -282,14 +453,138 @@
       </aside>
     </main>
   </div>
+
+  <!-- Marked.js for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
   <script>
-    // Sidebar active nav
-    document.querySelectorAll('.sidebar nav ul li').forEach(item => {
-      item.addEventListener('click', function () {
-        document.querySelectorAll('.sidebar nav ul li').forEach(li => li.classList.remove('active'));
-        this.classList.add('active');
+    // Remove .active class from all sidebar nav items and add to clicked
+    document.querySelectorAll('#nav-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
+        item.classList.add('active');
       });
     });
+
+    // Load Home (initial posts list)
+    function loadHome() {
+      // Set active class to Home nav
+      const navItems = document.querySelectorAll('#nav-list li');
+      navItems.forEach(li => li.classList.remove('active'));
+      navItems[0].classList.add('active');
+
+      // Hardcoded posts HTML - match the initial posts content
+      const homeHTML = `
+        <div class="posts">
+          <div class="post">
+            <h3>git summary</h3>
+            <p>What is a Git repository? A Git repository is a virtual storage of your project. It allows you to save versions of your code, which you can access when needed. Workflow your local repository...</p>
+            <div class="meta">
+              <span>Apr 9, 2024</span>
+              <span>Software Engineering</span>
+            </div>
+          </div>
+          <div class="post">
+            <h3>LSTM</h3>
+            <p>Why do we need LSTM? RNNs, Although take past 'context' into consideration. They do suffer the problem of Vanishing or Exploding gradient problem. Simply put, the gradient is calculated in any...</p>
+            <div class="meta">
+              <span>Aug 1, 2023</span>
+              <span>AI</span>
+            </div>
+          </div>
+          <div class="post">
+            <h3>Recurrent Neural Networks</h3>
+            <p>Introduction: One of the most plausible analogy for RNNs: Humans don’t start their thinking from scratch every second. As you read this essay, you understand each word based on your...</p>
+            <div class="meta">
+              <span>Jul 15, 2023</span>
+              <span>AI</span>
+            </div>
+          </div>
+          <div class="post">
+            <h3>A primer on Vector embeddings</h3>
+            <p>A primer on Vector embeddings. Let’s rollback to the times when transformers didn’t exist. Finding the contextual meaning of a word in a sentence was a much harder task. Getting contextual simila...</p>
+            <div class="meta">
+              <span>Jun 9, 2023</span>
+              <span>AI</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('main-content').innerHTML = homeHTML;
+    }
+
+    // Load README.md content of a repo in main content area
+    function loadRepoReadme(repoFullName) {
+      const rawUrl = `https://raw.githubusercontent.com/${repoFullName}/main/README.md`;
+
+      fetch(rawUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('README not found');
+          }
+          return response.text();
+        })
+        .then(markdown => {
+          const html = marked.parse(markdown);
+
+          // Count words and estimate reading time
+          const words = markdown.trim().split(/\s+/).length;
+          const readTime = Math.max(1, Math.ceil(words / 200));
+
+          // Create breadcrumb and meta info
+          const repoName = repoFullName.split('/')[1];
+          const authorName = repoFullName.split('/')[0];
+          const todayLocale = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+
+          // Generate Table of Contents from markdown headings h2 and h3
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          const headings = tempDiv.querySelectorAll('h2, h3');
+          let tocHtml = '';
+          headings.forEach((h, i) => {
+            const id = 'section-' + i;
+            h.id = id;
+            tocHtml += `<li><a href="#${id}">${h.textContent}</a></li>`;
+          });
+
+          // Final HTML for main content area
+          const postContent = `
+            <nav class="breadcrumb"><a href="#" onclick="loadHome();return false;">Home</a> › ${repoName}</nav>
+            <h1>${repoName}</h1>
+            <div class="meta">
+              <span>Posted ${todayLocale}</span>
+              <span>By ${authorName}</span>
+              <span>${readTime} min read</span>
+              <span>${words} words</span>
+            </div>
+
+            <div class="contents-nav">
+              <h4>Contents</h4>
+              <ul>${tocHtml}</ul>
+            </div>
+
+            <div id="post-body">${tempDiv.innerHTML}</div>
+          `;
+
+          document.getElementById('main-content').innerHTML = postContent;
+
+          // Add click listeners to TOC links to add active style
+          const tocLinks = document.querySelectorAll('.contents-nav ul li a');
+          tocLinks.forEach(link => {
+            link.addEventListener('click', function() {
+              tocLinks.forEach(l => l.classList.remove('active'));
+              this.classList.add('active');
+            });
+          });
+        })
+        .catch(() => {
+          document.getElementById('main-content').innerHTML = `
+            <div class="post">
+              <p>Could not load README for repository: ${repoFullName}</p>
+            </div>
+          `;
+        });
+    }
   </script>
 </body>
 </html>

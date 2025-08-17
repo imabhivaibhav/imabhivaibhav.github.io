@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vaibhav - Unplugged corner</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Inter:400,700&display=swap');
+    body {
+      background: #181a20;
+      color: #ddd;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background: #20232a;
+      padding: 32px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .profile {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .avatar {
+      width: 88px;
+      height: 88px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 3px solid #fff;
+      background: #616262;
+      display: block;
+      margin: 0 auto 12px auto;
+    }
+    .profile h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #fff;
+    }
+    .profile p {
+      margin: 4px 0 0 0;
+      font-size: 1rem;
+      color: #b3bbc6;
+    }
+
+    .sidebar nav {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .sidebar nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+    .sidebar nav ul li {
+      padding: 12px 0 12px 24px;
+      font-size: 1rem;
+      color: #b3bbc6;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 0 0 6px 0;
+      transition: background 0.2s;
+      width: 92%;
+      text-align: left;
+    }
+    .sidebar nav ul .active {
+      background: #282c34;
+      color: #fff;
+    }
+    .social {
+      display: flex;
+      gap: 16px;
+      margin-top: auto;
+      margin-bottom: 22px;
+      color: #b3bbc6;
+      font-size: 1.22rem;
+      justify-content: center;
+    }
+    .content {
+      display: flex;
+      justify-content: stretch;
+      flex: 1;
+      padding: 42px 38px 36px 38px;
+      gap: 38px;
+    }
+    .posts {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+    .post {
+      background: #23272f;
+      padding: 26px 28px 18px 28px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 2px;
+      transition: background 0.2s;
+    }
+    .post:hover {
+      background: #282c34;
+    }
+    .post h3 {
+      margin: 0 0 12px 0;
+      font-size: 1.35rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    .post p {
+      margin: 0 0 12px 0;
+      color: #b3bbc6;
+      font-size: 1.04rem;
+    }
+    .post .meta {
+      font-size: 0.89rem;
+      color: #7e879d;
+      display: flex;
+      gap: 22px;
+    }
+    .rightbar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      min-width: 270px;
+      max-width: 340px;
+    }
+    .rightbar section {
+      background: #23272f;
+      border-radius: 14px;
+      padding: 20px 20px;
+    }
+    .rightbar h4 {
+      color: #fff;
+      margin: 0 0 13px 0;
+      font-size: 1.08rem;
+      font-weight: 600;
+    }
+    .recent-updates ul,
+    .trending-tags .tags {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .recent-updates ul li {
+      padding: 6px 0;
+      font-size: 0.99rem;
+      color: #b3bbc6;
+      border-bottom: 1px solid #262930;
+    }
+    .recent-updates ul li:last-child {
+      border-bottom: none;
+    }
+    .trending-tags .tags span {
+      display: inline-block;
+      background: #282c34;
+      color: #fff;
+      font-size: 0.93rem;
+      margin: 4px 7px 4px 0;
+      padding: 6px 14px;
+      border-radius: 18px;
+      font-weight: 500;
+    }
+    @media (max-width: 950px) {
+      .container {
+        flex-direction: column;
+      }
+      .content {
+        flex-direction: column;
+        padding: 24px 8px;
+      }
+      .rightbar {
+        gap: 16px;
+        min-width: 100%;
+        max-width: 100%;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 12px 0;
+      }
+      .profile {
+        margin-bottom: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="profile">
+        <img src="https://raw.githubusercontent.com/vaibhav28/vaibhav28.github.io/main/assets/profile.jpg" alt="Vaibhav Avatar" class="avatar">
+        <h2>Vaibhav</h2>
+        <p>Unplugged corner</p>
+      </div>
+      <nav>
+        <ul>
+          <li class="active">Home</li>
+          <li>About</li>
+          <li>Categories</li>
+          <li>Tags</li>
+          <li>Archives</li>
+          <li>Vaibhav - Resume</li>
+        </ul>
+      </nav>
+      <div class="social">
+        <span title="Mail">✉️</span>
+        <span title="GitHub">🐙</span>
+        <span title="Twitter">🐦</span>
+        <span title="LinkedIn">🔗</span>
+      </div>
+    </aside>
+    <main class="content">
+      <div class="posts">
+        <div class="post">
+          <h3>git summary</h3>
+          <p>What is a Git repository? A Git repository is a virtual storage of your project. It allows you to save versions of your code, which you can access when needed. Workflow your local repository...</p>
+          <div class="meta">
+            <span>Apr 9, 2024</span>
+            <span>Software Engineering</span>
+          </div>
+        </div>
+        <div class="post">
+          <h3>LSTM</h3>
+          <p>Why do we need LSTM? RNNs, Although take past 'context' into consideration. They do suffer the problem of Vanishing or Exploding gradient problem. Simply put, the gradient is calculated in any...</p>
+          <div class="meta">
+            <span>Aug 1, 2023</span>
+            <span>AI</span>
+          </div>
+        </div>
+        <div class="post">
+          <h3>Recurrent Neural Networks</h3>
+          <p>Introduction: One of the most plausible analogy for RNNs: Humans don’t start their thinking from scratch every second. As you read this essay, you understand each word based on your...</p>
+          <div class="meta">
+            <span>Jul 15, 2023</span>
+            <span>AI</span>
+          </div>
+        </div>
+        <div class="post">
+          <h3>A primer on Vector embeddings</h3>
+          <p>A primer on Vector embeddings. Let’s rollback to the times when transformers didn’t exist. Finding the contextual meaning of a word in a sentence was a much harder task. Getting contextual simila...</p>
+          <div class="meta">
+            <span>Jun 9, 2023</span>
+            <span>AI</span>
+          </div>
+        </div>
+      </div>
+      <aside class="rightbar">
+        <section class="recent-updates">
+          <h4>Recently Updated</h4>
+          <ul>
+            <li>A primer on Vector embeddings</li>
+            <li>Recurrent Neural Networks</li>
+            <li>LSTM</li>
+            <li>git summary</li>
+          </ul>
+        </section>
+        <section class="trending-tags">
+          <h4>Trending Tags</h4>
+          <div class="tags">
+            <span>machine-learning</span>
+            <span>Deep-learning</span>
+            <span>Git</span>
+            <span>LSTM</span>
+            <span>NLP</span>
+            <span>RNN</span>
+            <span>vector-embeddings</span>
+            <span>Version Control</span>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+  <script>
+    // Sidebar active nav
+    document.querySelectorAll('.sidebar nav ul li').forEach(item => {
+      item.addEventListener('click', function () {
+        document.querySelectorAll('.sidebar nav ul li').forEach(li => li.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

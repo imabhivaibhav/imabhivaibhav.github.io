@@ -333,24 +333,23 @@
             </div>
           </div>
         </div>`;
-      const latestNews = `
-  <div class="welcome-card" style="margin-top:38px;">
-    <h1 style="color:#60aaff;">AI/ML/Data Science News</h1>
-    <ul style="text-align:left;max-width:540px;margin:20px auto 0 auto;color:#ccc;font-size:1.07rem;">
-      <li><b>OpenAI</b> partners with IIT Madras to launch India-first Learning Accelerator, supporting students and teachers in AI research (Sep 2025).</li>
-      <li><b>Anthropic</b> will train its Claude AI models on user chats by default from September 28, raising privacy discussions.</li>
-      <li>A new <b>AI model by Sapient</b> outperforms ChatGPT in AGI benchmark tests owing to hierarchical reasoning, inspired by human cognition.</li>
-      <li><b>Microsoft launches MAI-1 and MAI-Voice-1</b>: text and voice models generating high-quality and real-time results from minimal GPU compute.</li>
-      <li><b>Meta’s AI division shake-up:</b> Top talent exits as company pursues “superintelligence.”</li>
-      <li><b>Upcoming Event:</b> Fast Machine Learning for Science Conference (Sept 1–5, ETH Zurich); latest in efficient deep learning for science.</li>
-      <li><b>NYSDS 2025:</b> September 11–12, New York—AI, ML, and robotics at the forefront of scientific data summit.</li>
-      <li>Google offers a free generative AI course for upskilling via Google Cloud (certification paid).</li>
+      const news = `
+  <div class="news-card">
+    <h2>Latest in AI / ML / DS</h2>
+    <ul>
+      <li><b>Microsoft</b> unveiled two new AI models: MAI-Voice-1 for rapid audio generation and MAI-1 Preview, a foundational LLM now public for testing.</li>
+      <li><b>Esaote</b> introduces AI-powered cardiac ultrasound tools, improving diagnostic imaging at ESC 2025.</li>
+      <li>1.3 million Australian businesses have adopted AI solutions, mostly led by startups, with notable revenue growth and cost savings.</li>
+      <li><b>Stanford</b> develops a virtual AI scientist that autonomously runs and analyzes biology experiments, accelerating drug discovery and genomics.</li>
+      <li>A new universal deepfake detector can spot AI-manipulated videos and audio with 98% accuracy—a leap forward for digital authenticity checks.</li>
+      <li><b>TREND:</b> Full-stack AI/data platforms are replacing point tools, integrating LLMs and GenAI agents directly into workflow management.</li>
+      <li><b>Broadcom</b> ships advanced AI chips to boost data center GPU connectivity, supporting massive AI training workloads.</li>
+      <li><b>Education and Careers:</b> Data science is at an all-time talent demand peak, with skills in NLP, AutoML, and cloud AI platforms especially valued in 2025.</li>
     </ul>
-  </div>
-`;
-document.getElementById('main-content').innerHTML = html + latestNews;
+  </div>`;
 
-      document.getElementById('main-content').innerHTML = html;
+      document.getElementById('main-content').innerHTML = html + news;
+
     }
 
     // About card with personal details in card style
@@ -420,6 +419,7 @@ document.getElementById('main-content').innerHTML = html + latestNews;
   </script>
 </body>
 </html>
+
 
 
 

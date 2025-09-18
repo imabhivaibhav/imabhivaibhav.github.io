@@ -1,402 +1,459 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Abhijeet Vaibhav</title>
+  <title>Abhijeet Vaibhav Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  />
   <style>
-    @import url('https://fonts.googleapis.com/css?family=Inter:400,700&display=swap');
-    body {
-      background: #181a20;
-      color: #ddd;
-      font-family: 'Inter', sans-serif;
+    /* Reset and base styles unchanged */
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-    .container {
+    body, html {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #121417, #1e1f29);
+      color: #e0e6f7;
+      overflow-x: hidden;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    /* Background Blob unchanged */
+    .blob {
+      position: fixed;
+      width: 450px;
+      height: 450px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: blobMove 8s infinite alternate ease-in-out;
+      opacity: 0.7;
+      top: 20%;
+      left: 5%;
+      z-index: -1;
+    }
+    @keyframes blobMove {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        transform: translate(40px, 20px) scale(1.1);
+      }
+    }
+    /* TOP NAV with seamless background */
+    #top-nav {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: transparent;
+      /* removing solid background and shadow to blend */
+      box-shadow: none;
       display: flex;
-      height: 100vh;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      z-index: 100;
+      user-select: none;
+      color: #e0e6f7;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
-    .sidebar {
-      width: 250px;
-      background: #20232a;
-      padding: 32px 0 0 0;
+    #top-nav .nav-logo {
+      color: #764ba2;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    #top-nav .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    #top-nav .nav-links span {
+      cursor: pointer;
+      padding-bottom: 3px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.3s, color 0.3s;
+      user-select:none;
+    }
+    /* Home button moved first and styled */
+    #top-nav .nav-links span:first-child {
+      color: #764ba2;
+      font-weight: 700;
+      border-bottom: 2px solid #764ba2;
+    }
+    #top-nav .nav-links span.active,
+    #top-nav .nav-links span:hover {
+      color: #9f91c9;
+      border-color: #9f91c9;
+      font-weight: 700;
+    }
+    #top-nav .nav-social {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 1.3rem;
+      color: #ccc;
+    }
+    #top-nav .nav-social span:hover {
+      color: #9f91c9;
+    }
+
+
+    /* LANDING PAGE */
+    #landing-page {
+      height: 100vh;
+      width: 100vw;
+      background: radial-gradient(ellipse at center, #1b1b2f 50%, #121425 99%);
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      color: #764ba2;
+      user-select: none;
+      padding: 0 1rem;
       box-sizing: border-box;
-      flex-shrink: 0; /* Prevent sidebar from shrinking */
     }
-    .profile {
-      text-align: center;
-      margin-bottom: 32px;
-      width: 100%;
-    }
-    .avatar {
-      width: 88px;
-      height: 88px;
-      object-fit: cover;
+    #landing-avatar {
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
-      margin-bottom: 10px;
-      border: 3px solid #fff;
-      background: #616262;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .profile h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #fff;
+      border: 4px solid #764ba2;
+      box-shadow: 0 0 30px #764ba288;
+      background: #28244B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      white-space: pre-line;
+      color: #764ba2;
     }
-    .profile p {
-      margin: 4px 0 0 0;
-      font-size: 1rem;
-      color: #b3bbc6;
-      font-style: italic;
+    #landing-title {
+      font-size: 3rem;
+      font-weight: 600;
+      color: #e0e6f7;
+      text-shadow: 0 0 10px #764ba2;
+    }
+    #landing-subtitle {
+      color: #a3a8d1;
+      font-size: 1.3rem;
       font-weight: 400;
     }
-    .sidebar nav {
-      width: 100%;
-      margin-bottom: 24px;
-    }
-    .sidebar nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-    }
-    .sidebar nav ul li {
-      padding: 12px 0 12px 24px;
-      font-size: 1rem;
-      color: #b3bbc6;
-      cursor: pointer;
-      border-radius: 6px;
-      margin: 0 0 6px 0;
-      transition: background 0.2s ease-in-out;
-      width: 92%;
-      text-align: left;
+    #typed {
+      color: #76a9ea;
+      font-weight: 600;
+      font-size: 1.2rem;
+      height: 30px;
+      margin-bottom: 2rem;
+      min-width: 250px;
       user-select: none;
     }
-    .sidebar nav ul li:hover {
-      background: #3a3f51;
-      color: #60aaff;
+    /* Remove blinking cursor from typed.js */
+    #typed .typed-cursor {
+      display: none !important;
     }
-    .sidebar nav ul .active {
-      background: #282c34;
-      color: #60aaff;
-      font-weight: 700;
-    }
-    .social {
+    #landing-buttons {
       display: flex;
-      gap: 16px;
-      margin-top: auto;
-      margin-bottom: 22px;
-      color: #b3bbc6;
-      font-size: 1.22rem;
-      justify-content: center;
-    }
-    .content {
-      display: flex;
-      justify-content: stretch;
-      flex: 1;
-      padding: 42px 38px 36px 38px;
-      gap: 38px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    #main-content {
-      flex: 3;
-      overflow-y: auto;
-      max-height: 100vh;
-      max-width: 100%;
-      box-sizing: border-box;
-      word-wrap: break-word;
-    }
-    /* Project cards */
-    .projects-grid {
-      display: flex;
+      gap: 20px;
       flex-wrap: wrap;
-      gap: 28px;
-      justify-content: flex-start;
-      align-items: flex-start;
-      margin-top: 30px;
-      margin-left: 10px;
-      max-width: 100%;
-      box-sizing: border-box;
+      justify-content: center;
+      margin-bottom: 3rem;
     }
-    .project-card {
-      background: #23272f;
-      border-radius: 13px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 32px 44px;
-      font-size: 1.25rem;
-      color: #fff;
-      font-weight: bold;
+    .btn {
+      background: #764ba2;
+      padding: 0.75rem 2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      color: white;
       cursor: pointer;
-      transition: background 0.18s, transform 0.15s;
-      min-width: 180px;
-      max-width: 320px;
-      text-align: center;
-      margin-bottom: 10px;
-      border: 2px solid transparent;
-      word-break: break-word;
+      border: none;
+      box-shadow: 0 5px 15px #764ba2aa;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      user-select: none;
     }
-    .project-card:hover {
-      background: #282c34;
-      border-color: #60aaff;
-      transform: scale(1.05);
-      color: #60aaff;
+    .btn:hover {
+      background: #667eea;
+      box-shadow: 0 8px 25px #667eeaaa;
     }
-    /* Markdown rendered content and cards */
-    #main-content > * {
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    #main-content img,
-    #main-content table,
-    #main-content pre,
-    #main-content iframe {
+    /* Info cards styling unchanged */
+    .info-cards { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; max-width: 900px; user-select: none; }
+    .card { background: rgba(118, 75, 162, 0.15); border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 8px 32px 0 rgba(118, 75, 162, 0.2); padding: 2rem 2.5rem; flex: 1 1 180px; min-width: 180px; color: #bdb8d7; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: default;}
+    .card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px 0 rgba(102, 126, 234, 0.5); color: white; }
+    .icon { font-size: 2rem; margin-bottom: 1rem; color: #b79fff; }
+    .label { font-size: 0.9rem; margin-bottom: 0.5rem; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 600; }
+    .value { font-size: 1.5rem; font-weight: 700; color: #e0e6f7; }
+
+
+    /* Main site content */
+    #site-contents { max-width: 1080px; margin: 64px auto 3rem; padding: 0 1rem; display: none; }
+    .projects-section { margin-top: 2rem; color: #e0e6f7; }
+    .projects-title { font-size: 2rem; font-weight: 800; margin-bottom: 1.4rem; color: #9da8d6; user-select: none; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem; }
+
+
+    /* Project cards 3D flip */
+    .card-container { perspective: 1100px; cursor: pointer; height: 200px; border-radius: 20px; user-select: none; }
+    .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; border-radius: 20px; box-shadow: 0 0 22px rgba(0,0,0,0.7); }
+    .card-container.flipped .card-inner { transform: rotateY(180deg); }
+    .card-front, .card-back { position: absolute; width: 100%; height: 100%; border-radius: 20px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(57, 59, 97, 0.24); box-shadow: inset 0 0 16px rgba(0,0,0,0.3); padding: 1rem; color: #e0e6f7; font-weight: 600; font-size: 1rem; text-align: center; user-select: none; }
+    .card-front { z-index: 2; }
+    .card-img { width: 56px; height: 56px; object-fit: cover; border-radius: 14px; margin-bottom: 1rem; border: 3px solid #764ba2; box-shadow: 0 0 12px #a584f7; background: #231f3a; user-select: none;}
+    .card-title { color: #a584f7; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.06em; }
+    .card-back { transform: rotateY(180deg); background: rgba(57, 59, 97, 0.35); color: #bfc8d8; font-weight: 400; font-size: 0.95rem; letter-spacing: 0.035em; cursor: default; user-select: text; box-shadow: inset 0 0 24px rgba(0,0,0,0.5); }
+    .card-container:focus-within,
+    .card-container:focus { outline: none; box-shadow: 0 0 30px #a584f7; }
+    .panel { max-width: 650px; margin: 3rem auto 2rem auto; background: rgba(42, 43, 66, 0.8); backdrop-filter: blur(12px); border-radius: 20px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.45); padding: 2.5rem 3rem; color: #b4b8c2; font-size: 1.1rem; line-height: 1.75; user-select: text; }
+    .panel h1 { color: #a584f7; font-size: 2rem; margin-bottom: 1rem; }
+    a { color: #a584f7; text-decoration: underline; transition: color 0.3s ease; }
+    a:hover { color: #9da8d6; }
+
+    /* Make images in README auto-fit inside container */
+    #main-content img {
       max-width: 100%;
       height: auto;
       display: block;
-      box-sizing: border-box;
-      margin-bottom: 1.5rem;
+      margin: 1rem auto;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(118, 75, 162, 0.4);
+      object-fit: contain;
+      user-select: none;
     }
-    /* Personal about card - keep previous card style */
-    .about-card {
-      background: #23272f;
-      border-radius: 16px;
-      padding: 40px;
-      max-width: 640px;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      font-size: 1.1rem;
-      margin: 30px auto;
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .projects-grid { grid-template-columns: 1fr 1fr; }
+      #landing-buttons { flex-wrap: wrap; gap: 1rem; }
     }
-    .about-card h1 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #60aaff;
-    }
-    .about-card p {
-      margin: 8px 0;
-      font-size: 1.1rem;
-      line-height: 1.5;
-      color: #b3bbc6;
-    }
-    /* Homepage welcome card */
-    .welcome-card {
-      background: #23272f;
-      border-radius: 16px;
-      padding: 44px 56px;
-      max-width: 600px;
-      margin: 64px auto 0 auto;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .welcome-card h1 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #60aaff;
-    }
-    .welcome-card p {
-      margin: 16px 0 0 0;
-      font-size: 1.15rem;
-      line-height: 1.7;
-      color: #b3bbc6;
-    }
-    .welcome-stats {
-      display: flex;
-      gap: 38px;
-      justify-content: center;
-      margin: 26px 0 0 0;
-      flex-wrap: wrap;
-    }
-    .stat-card {
-      background: #282c34;
-      border-radius: 10px;
-      padding: 18px 28px;
-      min-width: 120px;
-      color: #fff;
-      margin: 6px 0;
-      font-size: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .stat-title {
-      color: #b3bbc6;
-      font-size: 0.97rem;
-      margin-bottom: 8px;
-    }
-    .stat-value {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #60aaff;
-    }
-     /* Responsive */
-    @media (max-width: 950px) {
-      .container { flex-direction: column; }
-      .content { flex-direction: column; padding: 24px 8px; gap: 16px; overflow: visible; }
-      .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 12px 0; }
-      #main-content { max-height: none; }
-      .about-card { max-width: 100%; padding: 24px; margin: 30px 12px; }
-      .welcome-card { max-width: 100%; padding: 24px; margin: 36px 12px 0 12px; }
+    @media (max-width: 500px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      #landing-title { font-size: 2rem; }
+      #top-nav { padding: 0 1rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="profile">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWkQBJE4nwZ4_8RwDNhb7jERmnQVQPcP9M-w&s" alt="Abhijeet Vaibhav Avatar" class="avatar" />
-        <h2>Abhijeet Vaibhav</h2>
-        <p>B.Tech + M.Tech (Dual Degree)</p> 
-        <p>Electrical Engineering</p>
-        <p>IIT Bombay</p>
+  <div class="blob"></div>
+
+
+  <!-- LANDING PAGE -->
+  <main id="landing-page" role="main" aria-label="Landing Page">
+    <div id="landing-avatar" aria-hidden="true">Abhijeet<br />Vaibhav</div>
+    <h1 id="landing-title">Abhijeet Vaibhav</h1>
+    <p id="landing-subtitle">B.Tech + M.Tech (Dual Degree), Electrical Engineering, IIT Bombay</p>
+    <p id="typed"></p>
+    <div id="landing-buttons" role="navigation" aria-label="Main page navigation">
+      <button class="btn" onclick="showProjects()">View Projects</button>
+      <button class="btn" onclick="alert('Resume is not linked!')">Download Resume</button>
+      <button class="btn" onclick="showAbout()">About</button>
+    </div>
+    <div class="info-cards" aria-label="Key stats">
+      <div class="card" title="Projects">
+        <div class="icon"><i class="fa-solid fa-code"></i></div>
+        <div class="label">Projects</div>
+        <div class="value" id="proj-count">4</div>
       </div>
-      <nav>
-        <ul id="nav-list">
-          <li class="active" onclick="loadHome()">Home</li>
-          <li onclick="showAbout()">About</li>
-          <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
-          <li onclick="showProjects()">Projects</li>
-          <hr style="border-color: #3a3f51; margin: 18px 0; width: 90%;" />
-          <li>Resume</li>
-        </ul>
-      </nav>
-      <div class="social" title="Social Links">
-        <span>✉️</span>
-        <span>🐙</span>
-        <span>🐦</span>
-        <span>🔗</span>
+      <div class="card" title="College">
+        <div class="icon"><i class="fa-solid fa-school"></i></div>
+        <div class="label">College</div>
+        <div class="value">IIT Bombay</div>
       </div>
-    </aside>
-    <!-- MAIN CONTENT -->
-    <main class="content">
-      <div id="main-content"></div>
-    </main>
+      <div class="card" title="Email">
+        <div class="icon"><i class="fa-solid fa-envelope"></i></div>
+        <div class="label">Email</div>
+        <div class="value">•••</div>
+      </div>
+      <div class="card" title="LinkedIn" onclick="window.open('https://linkedin.com/in/theabhijeetvaibhav', '_blank')" style="cursor:pointer;">
+        <div class="icon"><i class="fa-brands fa-linkedin"></i></div>
+        <div class="label">LinkedIn</div>
+        <div class="value">Profile</div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- TOP NAV -->
+  <nav id="top-nav" aria-label="Site Navigation">
+    <div class="nav-logo">Abhijeet Vaibhav</div>
+    <div class="nav-links" id="nav-links-top" role="navigation">
+      <span tabindex="0" role="link" onclick="showLanding()" onkeypress="if(event.key==='Enter'){showLanding()}" style="color:#764ba2; font-weight:700;">Home</span>
+      <span tabindex="0" role="link" onclick="showAbout()" onkeypress="if(event.key==='Enter'){showAbout()}">About</span>
+      <span tabindex="0" role="link" onclick="showProjects()" onkeypress="if(event.key==='Enter'){showProjects()}">Projects</span>
+      <span tabindex="0" role="link" onclick="alert('Resume is not linked!')" onkeypress="if(event.key==='Enter'){alert('Resume is not linked!')}">Resume</span>
+    </div>
+    <div class="nav-social" aria-label="Social media links">
+      <span>✉️</span>
+      <span>🐙</span>
+      <span>🐦</span>
+      <span>🔗</span>
+    </div>
+  </nav>
+
+
+  <!-- MAIN SITE CONTENT -->
+  <div id="site-contents" style="display:none; max-width: 1080px; margin: 64px auto 3rem; padding:0 1rem;">
+    <section class="panel" id="main-content" style="display:none;"></section>
+    <section class="projects-section" id="projects-section" style="display:none;">
+      <h2 class="projects-title">My Projects</h2>
+      <div class="projects-grid" id="projects-grid"></div>
+    </section>
   </div>
 
+
+  <!-- Typed.js animation -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    const projects = [
-      { name: "Spectrometry", repo: "imabhivaibhav/edl.iitb", readme: true },
-      { name: "Heart Failure Detector", repo: "imabhivaibhav/heart_failure", readme: true },
-      { name: "Sample Project", repo: "imabhivaibhav/myproject", readme: true },
-      { name: "Project", repo: "imabhivaibhav/", readme: true }
-    ];
-
-    document.querySelectorAll('#nav-list li').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('#nav-list li').forEach(li => li.classList.remove('active'));
-        item.classList.add('active');
-      });
+    const typed = new Typed('#typed', {
+      strings: [
+        'Passionate about AI',
+        'Machine Learning Enthusiast',
+        'Software Developer',
+        'Open Source Contributor',
+      ],
+      typeSpeed: 50,
+      backSpeed: 40,
+      backDelay: 1800,
+      loop: true,
+      showCursor: false,
     });
+    const projects = [
+      { name: "Spectrometry", repo: "imabhivaibhav/edl.iitb", readme: true, img: "https://cdn.jsdelivr.net/gh/imabhivaibhav/edl.iitb@main/project-icon.png", desc: "Spectrometry toolkit and analysis." },
+      { name: "Heart Failure Detector", repo: "imabhivaibhav/heart_failure", readme: true, img: "https://cdn.jsdelivr.net/gh/imabhivaibhav/heart_failure@main/project-icon.png", desc: "A tool for early detection of heart failure using ML." },
+      { name: "Sample Project", repo: "imabhivaibhav/myproject", readme: true, img: "https://cdn.jsdelivr.net/gh/imabhivaibhav/myproject@main/project-icon.png", desc: "Template project for demonstrating portfolio features." },
+      { name: "Spectrometry", repo: "imabhivaibhav/edl.iitb", readme: true, img: "https://cdn.jsdelivr.net/gh/imabhivaibhav/edl.iitb@main/project-icon.png", desc: "Spectrometry toolkit and analysis." },
+      { name: "Project", repo: "imabhivaibhav/", readme: true, img: "https://cdn.jsdelivr.net/gh/imabhivaibhav/default@main/project-icon.png", desc: "General catch-all for showing repository content." }
+    ];
+    document.getElementById("proj-count").innerText = projects.length;
 
-    // Homepage welcome card (default view)
-    function loadHome() {
-      const html = `
-        <div class="welcome-card">
-          <h1>Welcome!</h1>
-          <p>
-            Hi, I'm <b>Abhijeet Vaibhav</b><br>
-            A student at <strong>IIT Bombay</strong> passionate about AI, machine learning, and software development.
-            <br><br>
-            Explore my <span style="color:#60aaff; font-weight:500;">projects</span> and connect with me!
-          </p>
-          <div class="welcome-stats">
-            <div class="stat-card">
-              <div class="stat-title">Projects</div>
-              <div class="stat-value">${projects.length}</div>
+
+    function showLanding() {
+      document.getElementById('landing-page').style.display = 'flex';
+      document.getElementById('top-nav').style.display = 'none';
+      document.getElementById('site-contents').style.display = 'none';
+      clearActiveNavTop();
+    }
+    function showAbout() {
+      prepareMainSite();
+      clearActiveNavTop();
+      setActiveNav(1);
+      showMainContent();
+      clearProjectSection();
+      loadAboutContent();
+    }
+    function showProjects() {
+      prepareMainSite();
+      clearActiveNavTop();
+      setActiveNav(2);
+      hideMainContent();
+      showProjectSection();
+      loadProjectsGrid();
+    }
+    function prepareMainSite() {
+      document.getElementById('landing-page').style.display = 'none';
+      document.getElementById('top-nav').style.display = 'flex';
+      document.getElementById('site-contents').style.display = 'block';
+    }
+    function setActiveNav(index) {
+      const links = document.querySelectorAll('#nav-links-top span');
+      links.forEach(el => el.classList.remove('active'));
+      if (index < links.length) links[index].classList.add('active');
+    }
+    function clearActiveNavTop() {
+      const links = document.querySelectorAll('#nav-links-top span');
+      links.forEach(el => el.classList.remove('active'));
+    }
+    function showMainContent() {
+      document.getElementById('main-content').style.display = 'block';
+    }
+    function hideMainContent() {
+      document.getElementById('main-content').style.display = 'none';
+    }
+    function showProjectSection() {
+      document.getElementById('projects-section').style.display = 'block';
+    }
+    function clearProjectSection() {
+      document.getElementById('projects-section').style.display = 'none';
+    }
+    function loadAboutContent() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `
+      <h1>About Me</h1>
+      <p><strong>College:</strong> IIT Bombay<br>
+      <strong>Email:</strong> your.email@example.com<br>
+      <strong>Phone:</strong> +91 12345 67890<br>
+      <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/theabhijeetvaibhav" target="_blank" rel="noopener noreferrer">linkedin.com/in/theabhijeetvaibhav</a><br>
+      <strong>GitHub:</strong> <a href="https://github.com/Imabhivaibhav" target="_blank" rel="noopener noreferrer">github.com/Imabhivaibhav</a></p>
+      <p>Passionate about technology, AI, and software development. Always seeking to learn and share knowledge.</p>
+      `;
+    }
+    function loadProjectsGrid() {
+      let html = '';
+      const projectsGrid = document.getElementById('projects-grid');
+      projects.forEach((proj, idx) => {
+        html += `
+        <div class="card-container" tabindex="0" onclick="loadProjectContent(${idx})" onkeypress="if(event.key==='Enter'){loadProjectContent(${idx})}">
+          <div class="card-inner" id="card-inner-${idx}">
+            <div class="card-front project-card">
+              <img src="${proj.img}" alt="Project" class="card-img" onerror="this.style.display='none'">
+              <div class="card-title">${proj.name}</div>
+              <div style="color:#8ca0d8; font-size: 0.95rem; margin-top: 6px;">${proj.desc || ''}</div>
             </div>
-            <div class="stat-card">
-              <div class="stat-title">College</div>
-              <div class="stat-value">IIT Bombay</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-title">Email</div>
-              <div class="stat-value">...</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-title">LinkedIn</div>
-              <div class="stat-value"><a href="https://linkedin.com/in/theabhijeetvaibhav" target="_blank" style="color:#60aaff; text-decoration:none;">Profile</a></div>
-            </div>
+            <div class="card-back project-card">
+              <div style="font-size: 0.9rem;">
+                Click to view project details.<br/>
+                <span style="color:var(--accent);">(README or repo index)</span>
+              </div>
             </div>
           </div>
-        </div>`;
-      
-
-      document.getElementById('main-content').innerHTML = html;
-
-    }
-
-    // About card with personal details in card style
-    function showAbout() {
-      const html = `
-        <div class="about-card">
-          <h1>Abhijeet Vaibhav</h1>
-          <p><strong>College:</strong> IIT Bombay</p>
-          <p><strong>Email:</strong> your.email@example.com</p>
-          <p><strong>Phone:</strong> +91 12345 67890</p>
-          <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourprofile" target="_blank" style="color:#60aaff;">linkedin.com/in/yourprofile</a></p>
-          <p><strong>GitHub:</strong> <a href="https://github.com/Imabhivaibhav" target="_blank" style="color:#60aaff;">github.com/Imabhivaibhav</a></p>
-          <p><strong>About me:</strong> Passionate about technology, AI, and software development. Always seeking to learn and share knowledge.</p>
-        </div>`;
-      document.getElementById('main-content').innerHTML = html;
-    }
-
-    // Show project cards with box look
-    function showProjects() {
-      let html = `<div class="projects-grid">`;
-      projects.forEach((proj, idx) => {
-        html += `<div class="project-card" onclick="loadProjectContent(${idx})">${proj.name}</div>`;
+        </div>
+        `;
       });
-      html += `</div>`;
-      document.getElementById('main-content').innerHTML = html;
+      projectsGrid.innerHTML = html;
+      document.querySelectorAll('.card-container').forEach(container => {
+        container.addEventListener('mouseenter', () => container.classList.add('flipped'));
+        container.addEventListener('mouseleave', () => container.classList.remove('flipped'));
+        container.addEventListener('touchstart', () => container.classList.toggle('flipped'));
+      });
     }
-
-    // Load README or index.html of selected project content properly scaled inside main area
     function loadProjectContent(idx) {
-      const proj = projects[idx];
       const mainContent = document.getElementById('main-content');
+      const projectsSection = document.getElementById('projects-section');
+      projectsSection.style.display = 'none';
+      mainContent.style.display = 'block';
+
+
+      const proj = projects[idx];
       if (proj.readme) {
         const url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
         fetch(url)
           .then(res => {
-            if(!res.ok) throw new Error('README not found');
+            if (!res.ok) throw new Error('README not found');
             return res.text();
           })
           .then(md => {
-            const html = marked.parse(md);
-            mainContent.style.color = '#ddd';
-            mainContent.innerHTML = html;
+            mainContent.innerHTML = marked.parse(md);
           })
           .catch(() => {
-            mainContent.style.color = '#ddd';
             mainContent.innerHTML = `<p style="color:#f88;">Could not load README for repository: ${proj.repo}</p>`;
           });
       } else {
         const url = `https://raw.githubusercontent.com/${proj.repo}/main/index.html`;
         fetch(url)
           .then(res => {
-            if(!res.ok) throw new Error('Index not found');
+            if (!res.ok) throw new Error('Index not found');
             return res.text();
           })
           .then(html => {
-            mainContent.style.color = '#ddd';
             mainContent.innerHTML = html;
           })
           .catch(() => {
@@ -405,19 +462,9 @@
       }
     }
 
-    // Load homepage by default on page load
-    window.onload = loadHome;
+
+    // Initially show landing page
+    showLanding();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

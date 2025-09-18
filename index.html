@@ -121,21 +121,14 @@
       box-sizing: border-box;
     }
     #landing-avatar {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      border: 4px solid #764ba2;
-      box-shadow: 0 0 30px #764ba288;
-      background: #28244B;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.2;
-      white-space: pre-line;
-      color: #764ba2;
+     width: 140px;
+     height: 140px;
+     border-radius: 50%;
+     border: 4px solid #764ba2;
+     box-shadow: 0 0 30px #764ba288;
+     object-fit: cover;
+     display: block;
+     user-select: none;
     }
     #landing-title {
       font-size: 3rem;
@@ -247,7 +240,7 @@
 
   <!-- LANDING PAGE -->
   <main id="landing-page" role="main" aria-label="Landing Page">
-    <div id="landing-avatar" aria-hidden="true">Abhijeet<br />Vaibhav</div>
+    <img id="landing-avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWkQBJE4nwZ4_8RwDNhb7jERmnQVQPcP9M-w&s" alt="Abhijeet Vaibhav" />
     <h1 id="landing-title">Abhijeet Vaibhav</h1>
     <p id="landing-subtitle">B.Tech + M.Tech (Dual Degree), Electrical Engineering, IIT Bombay</p>
     <p id="typed"></p>
@@ -468,3 +461,4 @@
   </script>
 </body>
 </html>
+

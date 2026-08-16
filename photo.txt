@@ -1,3 +1,4 @@
+com1.png
 pic.jpeg
 ps1.jpeg
 ps2.jpeg

@@ -702,9 +702,9 @@
 
       <button
         class="btn"
-        onclick="alert('Resume is not linked!')">
+        onclick="showResume()">
 
-        Download Resume
+        Resume
 
       </button>
 
@@ -990,6 +990,47 @@ function showAbout(addHistory = true){
       AI, and software development.
 
     </p>
+
+  `;
+}
+
+function showResume(){
+
+  prepareMainSite();
+
+  document.getElementById(
+    'main-content'
+  ).style.display='block';
+
+  document.getElementById(
+    'projects-section'
+  ).style.display='none';
+
+  document.getElementById(
+    'main-content'
+  ).innerHTML = `
+
+    <h1>My Resume</h1>
+
+    <div class="resume-container">
+
+      <iframe
+        src="resume.pdf"
+        class="resume-pdf"
+        title="Abhijeet Vaibhav Resume">
+      </iframe>
+
+      <a
+        href="resume.pdf"
+        download="Abhijeet_Vaibhav_Resume.pdf"
+        class="resume-download">
+
+        <i class="fa-solid fa-download"></i>
+        Download Resume
+
+      </a>
+
+    </div>
 
   `;
 }

@@ -632,6 +632,252 @@
       display:block;
       margin:1rem auto;
     }
+    /* =========================
+   ABOUT PAGE
+========================= */
+
+.about-page{
+  width:100%;
+}
+
+.about-top{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  align-items:stretch;
+}
+
+/* LEFT - INFO */
+
+.about-info{
+  padding:2rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.about-info h1{
+  font-size:2.8rem;
+  margin-bottom:1.5rem;
+  background:linear-gradient(
+    90deg,
+    #fff,
+    var(--accent),
+    var(--accent2)
+  );
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.about-info p{
+  color:#d0d0d0;
+  line-height:1.8;
+  margin-bottom:1rem;
+}
+
+.about-info strong{
+  color:white;
+}
+
+.about-links{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin-top:1rem;
+}
+
+.about-links a{
+  padding:.6rem 1rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  text-decoration:none;
+  transition:.3s ease;
+}
+
+.about-links a:hover{
+  background:linear-gradient(
+    135deg,
+    var(--accent),
+    var(--accent2)
+  );
+  color:white;
+  transform:translateY(-3px);
+}
+
+
+/* RIGHT - SLIDESHOW */
+
+.about-slideshow{
+  position:relative;
+  height:420px;
+  border-radius:24px;
+  overflow:hidden;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 15px 45px rgba(0,0,0,.3);
+}
+
+.about-slide{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none !important;
+}
+
+.about-slide.active{
+  display:block !important;
+}
+
+.slide-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:50%;
+  background:rgba(0,0,0,.5);
+  color:white;
+  font-size:1.2rem;
+  cursor:pointer;
+  z-index:5;
+  transition:.3s ease;
+}
+
+.slide-btn:hover{
+  background:var(--accent);
+  transform:translateY(-50%) scale(1.1);
+}
+
+.slide-prev{
+  left:15px;
+}
+
+.slide-next{
+  right:15px;
+}
+
+.slide-dots{
+  position:absolute;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+  z-index:5;
+}
+
+.slide-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:rgba(255,255,255,.5);
+  cursor:pointer;
+  transition:.3s ease;
+}
+
+.slide-dot.active{
+  width:24px;
+  border-radius:10px;
+  background:var(--accent2);
+}
+
+
+/* =========================
+   PHOTO GRID
+========================= */
+
+.about-gallery{
+  margin-top:3rem;
+}
+
+.about-gallery-title{
+  font-size:2rem;
+  margin-bottom:1.5rem;
+  background:linear-gradient(
+    90deg,
+    #fff,
+    var(--accent)
+  );
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.photo-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.photo-grid img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:12px;
+  margin:0 !important;
+  cursor:pointer;
+  transition:.35s ease;
+}
+
+.photo-grid img:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 30px rgba(124,92,255,.3);
+}
+
+.hidden-photo{
+  display:none !important;
+}
+
+.view-more-btn{
+  display:block;
+  margin:2rem auto 0;
+  border:none;
+  padding:.8rem 1.8rem;
+  border-radius:999px;
+  background:linear-gradient(
+    135deg,
+    var(--accent),
+    var(--accent2)
+  );
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s ease;
+}
+
+.view-more-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 30px rgba(124,92,255,.35);
+}
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .about-top{
+    grid-template-columns:1fr;
+  }
+
+  .about-slideshow{
+    height:350px;
+  }
+
+  .about-info{
+    padding:1rem;
+  }
+
+  .about-info h1{
+    font-size:2.2rem;
+  }
+
+  .photo-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+  }
+
+}
 
     a{
       color:var(--accent2);
@@ -1046,20 +1292,263 @@ function showAbout(addHistory = true){
 
   document.getElementById('main-content').innerHTML = `
 
-    <h1>About Me</h1>
+    <div class="about-page">
 
-    <p>
-      <strong>College:</strong>
-      IIT Bombay
+      <!-- TOP SECTION -->
 
-      <br><br>
+      <div class="about-top">
 
-      Passionate about technology,
-      AI, and software development.
+        <!-- LEFT : NORMAL INFO -->
 
-    </p>
+        <div class="about-info">
+
+          <h1>About Me</h1>
+
+          <p>
+            <strong>Name:</strong>
+            Abhijeet Vaibhav
+          </p>
+
+          <p>
+            <strong>College:</strong>
+            IIT Bombay
+          </p>
+
+          <p>
+            <strong>Education:</strong>
+            B.Tech + M.Tech (Dual Degree),
+            Electrical Engineering
+          </p>
+
+          <p>
+            Passionate about technology,
+            AI, Machine Learning,
+            and software development.
+          </p>
+
+          <p>
+            I enjoy building practical projects
+            and exploring new technologies.
+          </p>
+
+          <div class="about-links">
+
+            <a
+              href="https://github.com/Imabhivaibhav"
+              target="_blank">
+              GitHub
+            </a>
+
+            <a
+              href="https://linkedin.com/in/theabhijeetvaibhav"
+              target="_blank">
+              LinkedIn
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- RIGHT : SLIDESHOW -->
+
+        <div class="about-slideshow">
+
+          <img
+            src="https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/pic.jpeg"
+            class="about-slide active"
+            alt="Photo 1">
+
+          <img
+            src="PHOTO_2_URL"
+            class="about-slide"
+            alt="Photo 2">
+
+          <img
+            src="PHOTO_3_URL"
+            class="about-slide"
+            alt="Photo 3">
+
+          <img
+            src="PHOTO_4_URL"
+            class="about-slide"
+            alt="Photo 4">
+
+
+          <button
+            class="slide-btn slide-prev"
+            onclick="changeSlide(-1)">
+            ❮
+          </button>
+
+          <button
+            class="slide-btn slide-next"
+            onclick="changeSlide(1)">
+            ❯
+          </button>
+
+
+          <div class="slide-dots">
+
+            <span
+              class="slide-dot active"
+              onclick="showSlide(0)">
+            </span>
+
+            <span
+              class="slide-dot"
+              onclick="showSlide(1)">
+            </span>
+
+            <span
+              class="slide-dot"
+              onclick="showSlide(2)">
+            </span>
+
+            <span
+              class="slide-dot"
+              onclick="showSlide(3)">
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- BOTTOM PHOTO GRID -->
+
+      <div class="about-gallery">
+
+        <h2 class="about-gallery-title">
+          My Photos
+        </h2>
+
+        <div class="photo-grid">
+
+          <img
+            src="PHOTO_1_URL"
+            alt="Photo">
+
+          <img
+            src="PHOTO_2_URL"
+            alt="Photo">
+
+          <img
+            src="PHOTO_3_URL"
+            alt="Photo">
+
+          <img
+            src="PHOTO_4_URL"
+            alt="Photo"
+            class="hidden-photo">
+
+          <img
+            src="PHOTO_5_URL"
+            alt="Photo"
+            class="hidden-photo">
+
+          <img
+            src="PHOTO_6_URL"
+            alt="Photo"
+            class="hidden-photo">
+
+        </div>
+
+
+        <button
+          class="view-more-btn"
+          onclick="showMorePhotos()">
+
+          View More
+
+        </button>
+
+      </div>
+
+    </div>
 
   `;
+
+
+  /* =========================
+     SLIDESHOW
+  ========================= */
+
+  let currentSlide = 0;
+
+  window.showSlide = function(index){
+
+    const slides =
+      document.querySelectorAll('.about-slide');
+
+    const dots =
+      document.querySelectorAll('.slide-dot');
+
+    if(index >= slides.length){
+      index = 0;
+    }
+
+    if(index < 0){
+      index = slides.length - 1;
+    }
+
+    slides.forEach(
+      slide => slide.classList.remove('active')
+    );
+
+    dots.forEach(
+      dot => dot.classList.remove('active')
+    );
+
+    slides[index].classList.add('active');
+    dots[index].classList.add('active');
+
+    currentSlide = index;
+  };
+
+
+  window.changeSlide = function(direction){
+
+    showSlide(
+      currentSlide + direction
+    );
+
+  };
+
+
+  /* AUTO SLIDE */
+
+  window.aboutSlideTimer =
+    setInterval(
+      () => {
+        changeSlide(1);
+      },
+      4000
+    );
+
+
+  /* VIEW MORE */
+
+  window.showMorePhotos = function(){
+
+    document
+      .querySelectorAll('.hidden-photo')
+      .forEach(
+        photo => {
+          photo.classList.remove(
+            'hidden-photo'
+          );
+        }
+      );
+
+    document.querySelector(
+      '.view-more-btn'
+    ).style.display='none';
+
+  };
+
 }
 
 function showResume(){

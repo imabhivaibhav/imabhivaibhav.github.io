@@ -1356,40 +1356,25 @@ function showAbout(addHistory = true){
 
         <!-- RIGHT : SLIDESHOW -->
 
-        <div class="about-slideshow">
-
-          <img
-            src="https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/pic.jpeg"
-            class="about-slide active"
-            alt="Photo 1">
-
-          <img
-            src="PHOTO_2_URL"
-            class="about-slide"
-            alt="Photo 2">
-
-          <img
-            src="PHOTO_3_URL"
-            class="about-slide"
-            alt="Photo 3">
-
-          <img
-            src="PHOTO_4_URL"
-            class="about-slide"
-            alt="Photo 4">
-
-
-          <button
-            class="slide-btn slide-prev"
-            onclick="changeSlide(-1)">
-            ❮
-          </button>
-
-          <button
-            class="slide-btn slide-next"
-            onclick="changeSlide(1)">
-            ❯
-          </button>
+            <div class="about-slideshow" id="about-slideshow">
+    
+              <!-- Photos will be loaded automatically -->
+            
+              <button
+                class="slide-btn slide-prev"
+                onclick="changeSlide(-1)">
+                ❮
+              </button>
+            
+              <button
+                class="slide-btn slide-next"
+                onclick="changeSlide(1)">
+                ❯
+              </button>
+            
+              <div class="slide-dots" id="slide-dots"></div>
+            
+           </div>
 
 
           <div class="slide-dots">
@@ -1429,36 +1414,13 @@ function showAbout(addHistory = true){
           My Photos
         </h2>
 
-        <div class="photo-grid">
-
-          <img
-            src="PHOTO_1_URL"
-            alt="Photo">
-
-          <img
-            src="PHOTO_2_URL"
-            alt="Photo">
-
-          <img
-            src="PHOTO_3_URL"
-            alt="Photo">
-
-          <img
-            src="PHOTO_4_URL"
-            alt="Photo"
-            class="hidden-photo">
-
-          <img
-            src="PHOTO_5_URL"
-            alt="Photo"
-            class="hidden-photo">
-
-          <img
-            src="PHOTO_6_URL"
-            alt="Photo"
-            class="hidden-photo">
-
-        </div>
+       <div
+        class="photo-grid"
+        id="photo-grid">
+      
+        <!-- Photos will be loaded automatically -->
+      
+      </div>
 
 
         <button
@@ -1480,80 +1442,270 @@ function showAbout(addHistory = true){
      SLIDESHOW
   ========================= */
 
-  let currentSlide = 0;
+/* =========================
+   LOAD PHOTOS FROM GITHUB
+========================= */
 
-  window.showSlide = function(index){
+const photoListURL =
+  'https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/photos.txt';
 
-    const slides =
-      document.querySelectorAll('.about-slide');
-
-    const dots =
-      document.querySelectorAll('.slide-dot');
-
-    if(index >= slides.length){
-      index = 0;
-    }
-
-    if(index < 0){
-      index = slides.length - 1;
-    }
-
-    slides.forEach(
-      slide => slide.classList.remove('active')
-    );
-
-    dots.forEach(
-      dot => dot.classList.remove('active')
-    );
-
-    slides[index].classList.add('active');
-    dots[index].classList.add('active');
-
-    currentSlide = index;
-  };
+const photoBaseURL =
+  'https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/';
 
 
-  window.changeSlide = function(direction){
-
-    showSlide(
-      currentSlide + direction
-    );
-
-  };
+let currentSlide = 0;
+let photoFiles = [];
 
 
-  /* AUTO SLIDE */
+fetch(photoListURL)
 
-  window.aboutSlideTimer =
-    setInterval(
-      () => {
-        changeSlide(1);
-      },
-      4000
-    );
+  .then(response => response.text())
+
+  .then(text => {
+
+    photoFiles = text
+      .split(/\r?\n/)
+      .map(file => file.trim())
+      .filter(file => file.length > 0);
 
 
-  /* VIEW MORE */
+    /* =========================
+       SLIDESHOW
+    ========================= */
 
-  window.showMorePhotos = function(){
-
-    document
-      .querySelectorAll('.hidden-photo')
-      .forEach(
-        photo => {
-          photo.classList.remove(
-            'hidden-photo'
-          );
-        }
+    const slideshow =
+      document.getElementById(
+        'about-slideshow'
       );
 
+    const dots =
+      document.getElementById(
+        'slide-dots'
+      );
+
+
+    /* First 4 photos for slideshow */
+
+    photoFiles
+      .slice(0,4)
+      .forEach((file,index) => {
+
+        const img =
+          document.createElement('img');
+
+        img.src =
+          photoBaseURL + encodeURIComponent(file);
+
+        img.className =
+          'about-slide';
+
+        if(index === 0){
+          img.classList.add('active');
+        }
+
+        img.alt =
+          'Photo ' + (index + 1);
+
+        slideshow.prepend(img);
+
+
+        const dot =
+          document.createElement('span');
+
+        dot.className =
+          'slide-dot';
+
+        if(index === 0){
+          dot.classList.add('active');
+        }
+
+        dot.onclick = function(){
+          showSlide(index);
+        };
+
+        dots.appendChild(dot);
+
+      });
+
+
+    /* =========================
+       PHOTO GRID
+    ========================= */
+
+    const grid =
+      document.getElementById(
+        'photo-grid'
+      );
+
+
+    photoFiles.forEach(
+      (file,index) => {
+
+        const img =
+          document.createElement('img');
+
+        img.src =
+          photoBaseURL + encodeURIComponent(file);
+
+        img.alt =
+          'Photo ' + (index + 1);
+
+
+        /* Show only first 3 initially */
+
+        if(index >= 3){
+
+          img.classList.add(
+            'hidden-photo'
+          );
+
+        }
+
+        grid.appendChild(img);
+
+      }
+    );
+
+
+    /* Hide View More if only 3 or fewer */
+
+    const viewMore =
+      document.querySelector(
+        '.view-more-btn'
+      );
+
+    if(photoFiles.length <= 3){
+
+      viewMore.style.display =
+        'none';
+
+    }
+
+  })
+
+  .catch(error => {
+
+    console.error(
+      'Could not load photos:',
+      error
+    );
+
+  });
+
+
+/* =========================
+   SLIDESHOW CONTROLS
+========================= */
+
+window.showSlide = function(index){
+
+  const slides =
+    document.querySelectorAll(
+      '.about-slide'
+    );
+
+  const dots =
+    document.querySelectorAll(
+      '.slide-dot'
+    );
+
+
+  if(!slides.length){
+    return;
+  }
+
+
+  if(index >= slides.length){
+    index = 0;
+  }
+
+  if(index < 0){
+    index = slides.length - 1;
+  }
+
+
+  slides.forEach(
+    slide =>
+      slide.classList.remove(
+        'active'
+      )
+  );
+
+
+  dots.forEach(
+    dot =>
+      dot.classList.remove(
+        'active'
+      )
+  );
+
+
+  slides[index].classList.add(
+    'active'
+  );
+
+  dots[index].classList.add(
+    'active'
+  );
+
+
+  currentSlide = index;
+
+};
+
+
+window.changeSlide = function(direction){
+
+  showSlide(
+    currentSlide + direction
+  );
+
+};
+
+
+/* Auto slideshow */
+
+window.aboutSlideTimer =
+  setInterval(
+    () => {
+      changeSlide(1);
+    },
+    4000
+  );
+
+
+/* =========================
+   VIEW MORE
+========================= */
+
+window.showMorePhotos = function(){
+
+  document
+    .querySelectorAll(
+      '.hidden-photo'
+    )
+    .forEach(
+      photo => {
+
+        photo.classList.remove(
+          'hidden-photo'
+        );
+
+      }
+    );
+
+
+  const button =
     document.querySelector(
       '.view-more-btn'
-    ).style.display='none';
+    );
 
-  };
+  if(button){
+    button.style.display =
+      'none';
+  }
 
-}
+};
 
 function showResume(){
 

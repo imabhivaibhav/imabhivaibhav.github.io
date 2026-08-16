@@ -933,64 +933,54 @@
 
     /* NAVIGATION */
 
-    function showLanding(){
+/* NAVIGATION + BROWSER HISTORY */
 
-      document.getElementById(
-        'landing-page'
-      ).style.display='flex';
+function showLanding(addHistory = true){
 
-      document.getElementById(
-        'electricity'
-      ).style.display='block';
+  if(addHistory){
+    history.pushState(
+      {page:"landing"},
+      "",
+      window.location.pathname
+    );
+  }
 
-      document.getElementById(
-        'top-nav'
-      ).style.display='none';
+  document.getElementById('landing-page').style.display='flex';
+  document.getElementById('electricity').style.display='block';
+  document.getElementById('top-nav').style.display='none';
+  document.getElementById('site-contents').style.display='none';
+}
 
-      document.getElementById(
-        'site-contents'
-      ).style.display='none';
-    }
 
-    function prepareMainSite(){
+function prepareMainSite(){
 
-      document.getElementById(
-        'landing-page'
-      ).style.display='none';
+  document.getElementById('landing-page').style.display='none';
+  document.getElementById('electricity').style.display='none';
+  document.getElementById('top-nav').style.display='flex';
+  document.getElementById('site-contents').style.display='block';
+}
 
-      document.getElementById(
-        'electricity'
-      ).style.display='none';
 
-      document.getElementById(
-        'top-nav'
-      ).style.display='flex';
+function showAbout(addHistory = true){
 
-      document.getElementById(
-        'site-contents'
-      ).style.display='block';
-    }
+  if(addHistory){
+    history.pushState(
+      {page:"about"},
+      "",
+      window.location.pathname + "#about"
+    );
+  }
 
-    function showAbout(){
+  prepareMainSite();
 
-      prepareMainSite();
+  document.getElementById('main-content').style.display='block';
+  document.getElementById('projects-section').style.display='none';
 
-      document.getElementById(
-        'main-content'
-      ).style.display='block';
+  document.getElementById('main-content').innerHTML = `
 
-      document.getElementById(
-        'projects-section'
-      ).style.display='none';
+    <h1>About Me</h1>
 
-      document.getElementById(
-        'main-content'
-      ).innerHTML = `
-
-      <h1>About Me</h1>
-
-      <p>
-
+    <p>
       <strong>College:</strong>
       IIT Bombay
 
@@ -999,93 +989,174 @@
       Passionate about technology,
       AI, and software development.
 
-      </p>
+    </p>
 
-      `;
-    }
+  `;
+}
 
-    function showProjects(){
 
-      prepareMainSite();
+function showProjects(addHistory = true){
 
-      document.getElementById(
-        'main-content'
-      ).style.display='none';
+  if(addHistory){
+    history.pushState(
+      {page:"projects"},
+      "",
+      window.location.pathname + "#projects"
+    );
+  }
 
-      document.getElementById(
-        'projects-section'
-      ).style.display='block';
+  prepareMainSite();
 
-      let html='';
+  document.getElementById('main-content').style.display='none';
+  document.getElementById('projects-section').style.display='block';
 
-      projects.forEach((proj,idx)=>{
+  let html='';
 
-        html += `
+  projects.forEach((proj,idx)=>{
 
-        <div
-          class="card-container"
-          onclick="loadProjectContent(${idx})"
-        >
+    html += `
 
-          <div class="card-inner">
+      <div
+        class="card-container"
+        onclick="loadProjectContent(${idx})"
+      >
 
-            <div class="card-front">
+        <div class="card-inner">
 
-              <img
-                src="${proj.img}"
-                class="card-img"
-              >
+          <div class="card-front">
 
-              <div class="card-title">
-                ${proj.name}
-              </div>
+            <img
+              src="${proj.img}"
+              class="card-img"
+            >
 
-              <div>
-                ${proj.desc}
-              </div>
-
+            <div class="card-title">
+              ${proj.name}
             </div>
 
-            <div class="card-back">
-              Click to view project details
+            <div>
+              ${proj.desc}
             </div>
 
           </div>
 
+          <div class="card-back">
+            Click to view project details
+          </div>
+
         </div>
 
-        `;
-      });
+      </div>
 
-      document.getElementById(
-        'projects-grid'
-      ).innerHTML = html;
+    `;
+  });
 
-      document.querySelectorAll(
-        '.card-container'
-      ).forEach(container=>{
+  document.getElementById('projects-grid').innerHTML = html;
 
-        container.addEventListener(
-          'mouseenter',
-          ()=>{
-            container.classList.add(
-              'flipped'
-            );
-          }
-        );
+  document.querySelectorAll('.card-container').forEach(container=>{
 
-        container.addEventListener(
-          'mouseleave',
-          ()=>{
-            container.classList.remove(
-              'flipped'
-            );
-          }
-        );
+    container.addEventListener(
+      'mouseenter',
+      ()=>{
+        container.classList.add('flipped');
+      }
+    );
 
-      });
-    }
+    container.addEventListener(
+      'mouseleave',
+      ()=>{
+        container.classList.remove('flipped');
+      }
+    );
 
+  });
+}
+
+
+/* PROJECT README */
+
+function loadProjectContent(idx, addHistory = true){
+
+  const proj = projects[idx];
+
+  if(addHistory){
+    history.pushState(
+      {
+        page:"project",
+        projectIndex:idx
+      },
+      "",
+      window.location.pathname + "#project-" + idx
+    );
+  }
+
+  const mainContent =
+    document.getElementById('main-content');
+
+  document.getElementById(
+    'projects-section'
+  ).style.display='none';
+
+  mainContent.style.display='block';
+
+  const url =
+    `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
+
+  fetch(url)
+
+    .then(res=>res.text())
+
+    .then(md=>{
+
+      mainContent.innerHTML =
+        marked.parse(md);
+
+    })
+
+    .catch(()=>{
+
+      mainContent.innerHTML =
+        '<p>Could not load README.</p>';
+
+    });
+}
+
+
+/* BROWSER BACK / FORWARD */
+
+window.addEventListener('popstate', function(event){
+
+  const state = event.state;
+
+  if(!state || state.page === "landing"){
+    showLanding(false);
+  }
+
+  else if(state.page === "about"){
+    showAbout(false);
+  }
+
+  else if(state.page === "projects"){
+    showProjects(false);
+  }
+
+  else if(state.page === "project"){
+    loadProjectContent(
+      state.projectIndex,
+      false
+    );
+  }
+
+});
+
+
+/* INITIAL HISTORY STATE */
+
+history.replaceState(
+  {page:"landing"},
+  "",
+  window.location.pathname
+);
     function loadProjectContent(idx){
 
       const proj = projects[idx];

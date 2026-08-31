@@ -10,6 +10,48 @@ if (window.supabase) {
 }
 
 /* =========================================================
+   TOAST NOTIFICATION SYSTEM (REPLACES CHROME ALERTS)
+========================================================= */
+window.showToast = function(msg, type = 'success') {
+  let toastContainer = document.getElementById('toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    `;
+    document.body.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    background: ${type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)'};
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease;
+  `;
+  toast.innerText = msg;
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+};
+
+/* =========================================================
    2. TYPED EFFECT INITIALIZATION
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
@@ -115,9 +157,11 @@ window.showAbout = function(addHistory = true) {
           <p><strong>Education:</strong> B.Tech + M.Tech (Dual Degree), Electrical Engineering</p>
           <p>Passionate about technology, AI, Machine Learning, and software development.</p>
           <p>I enjoy building practical projects and exploring new technologies.</p>
+
           <div class="about-links">
             <a href="https://github.com/Imabhivaibhav" target="_blank">GitHub</a>
             <a href="https://linkedin.com/in/theabhijeetvaibhav" target="_blank">LinkedIn</a>
+            <a href="javascript:void(0)" onclick="showMessage()">Message</a>
           </div>
         </div>
 
@@ -210,7 +254,7 @@ window.showMorePhotos = function() {
 };
 
 /* =========================================================
-   5. MESSAGE SECTION & SUPABASE SUBMISSION
+   5. MESSAGE SECTION & SUPABASE SUBMISSION (AUTO REDIRECT TO ABOUT)
 ========================================================= */
 window.showMessage = function(addHistory = true) {
   if (addHistory) {
@@ -261,7 +305,7 @@ window.handleFormSubmit = async function(event) {
   const message = document.getElementById('contact-msg').value;
 
   if (!supabaseClient) {
-    alert("Supabase is not initialized. Check your credentials.");
+    showToast("Supabase is not initialized.", "error");
     submitBtn.innerText = 'Send';
     submitBtn.disabled = false;
     return;
@@ -272,11 +316,11 @@ window.handleFormSubmit = async function(event) {
     .insert([{ name, email, message }]);
 
   if (error) {
-    alert("Error sending message: " + error.message);
+    showToast("Error: " + error.message, "error");
   } else {
-    alert("Thank you! Your message has been sent successfully.");
+    showToast("Thank you! Your message has been sent successfully.", "success");
     document.getElementById('contact-form').reset();
-    showLanding();
+    showAbout(); // Redirects to About Page
   }
 
   submitBtn.innerText = 'Send';
@@ -319,7 +363,6 @@ window.showProjects = async function(addHistory = true) {
 
   let allProjects = [...projects];
 
-  // Fetch dynamic projects from Supabase
   if (supabaseClient) {
     try {
       const { data: dbProjects } = await supabaseClient

@@ -448,6 +448,16 @@
       0 20px 45px rgba(124,92,255,0.4);
     }
 
+    .btn-secondary{
+      background:rgba(255,255,255,0.1);
+      box-shadow:none;
+      border:1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-secondary:hover{
+      background:rgba(255,255,255,0.2);
+    }
+
     /* =========================
        INFO CARDS
     ========================= */
@@ -643,265 +653,332 @@
       display:block;
       margin:1rem auto;
     }
+    
     /* =========================
-   ABOUT PAGE
-========================= */
+       CONTACT FORM PAGE
+    ========================= */
+    .contact-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-.about-page{
-  width:100%;
-}
+    .contact-title {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(90deg, #fff, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-.about-top{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:2rem;
-  align-items:stretch;
-}
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
 
-/* LEFT - INFO */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: left;
+    }
 
-.about-info{
-  padding:2rem;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
+    .form-group label {
+      color: var(--sub);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
 
-.about-info h1{
-  font-size:2.8rem;
-  margin-bottom:1.5rem;
-  background:linear-gradient(
-    90deg,
-    #fff,
-    var(--accent),
-    var(--accent2)
-  );
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+    .form-control {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s ease;
+    }
 
-.about-info p{
-  color:#d0d0d0;
-  line-height:1.8;
-  margin-bottom:1rem;
-}
+    .form-control:focus {
+      border-color: var(--accent2);
+      box-shadow: 0 0 15px rgba(92, 225, 230, 0.2);
+    }
 
-.about-info strong{
-  color:white;
-}
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+    }
 
-.about-links{
-  display:flex;
-  gap:1rem;
-  flex-wrap:wrap;
-  margin-top:1rem;
-}
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
 
-.about-links a{
-  padding:.6rem 1rem;
-  border-radius:999px;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);
-  text-decoration:none;
-  transition:.3s ease;
-}
+    /* =========================
+       ABOUT PAGE
+    ========================= */
 
-.about-links a:hover{
-  background:linear-gradient(
-    135deg,
-    var(--accent),
-    var(--accent2)
-  );
-  color:white;
-  transform:translateY(-3px);
-}
+    .about-page{
+      width:100%;
+    }
 
+    .about-top{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:2rem;
+      align-items:stretch;
+    }
 
-/* RIGHT - SLIDESHOW */
+    /* LEFT - INFO */
 
-.about-slideshow{
-  position:relative;
-  height:420px;
-  width:100%;
+    .about-info{
+      padding:2rem;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+    .about-info h1{
+      font-size:2.8rem;
+      margin-bottom:1.5rem;
+      background:linear-gradient(
+        90deg,
+        #fff,
+        var(--accent),
+        var(--accent2)
+      );
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
 
-  overflow:hidden;
+    .about-info p{
+      color:#d0d0d0;
+      line-height:1.8;
+      margin-bottom:1rem;
+    }
 
-  background:transparent;
-  border:none;
-  box-shadow:none;
-}
+    .about-info strong{
+      color:white;
+    }
 
-.about-slide{
-  max-width:100%;
-  max-height:100%;
+    .about-links{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      margin-top:1rem;
+    }
 
-  width:auto;
-  height:auto;
+    .about-links a{
+      padding:.6rem 1rem;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.1);
+      text-decoration:none;
+      transition:.3s ease;
+    }
 
-  object-fit:contain;
-
-  border-radius:16px;
-
-  display:none !important;
-}
-
-.about-slide.active{
-  display:block !important;
-}
-
-.slide-btn{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:42px;
-  height:42px;
-  border:none;
-  border-radius:50%;
-  background:rgba(0,0,0,.5);
-  color:white;
-  font-size:1.2rem;
-  cursor:pointer;
-  z-index:5;
-  transition:.3s ease;
-}
-
-.slide-btn:hover{
-  background:var(--accent);
-  transform:translateY(-50%) scale(1.1);
-}
-
-.slide-prev{
-  left:15px;
-}
-
-.slide-next{
-  right:15px;
-}
-
-.slide-dots{
-  position:absolute;
-  bottom:15px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:8px;
-  z-index:5;
-}
-
-.slide-dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:rgba(255,255,255,.5);
-  cursor:pointer;
-  transition:.3s ease;
-}
-
-.slide-dot.active{
-  width:24px;
-  border-radius:10px;
-  background:var(--accent2);
-}
+    .about-links a:hover{
+      background:linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent2)
+      );
+      color:white;
+      transform:translateY(-3px);
+    }
 
 
-/* =========================
-   PHOTO GRID
-========================= */
+    /* RIGHT - SLIDESHOW */
 
-.about-gallery{
-  margin-top:3rem;
-}
+    .about-slideshow{
+      position:relative;
+      height:420px;
+      width:100%;
 
-.about-gallery-title{
-  font-size:2rem;
-  margin-bottom:1.5rem;
-  background:linear-gradient(
-    90deg,
-    #fff,
-    var(--accent)
-  );
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+      display:flex;
+      align-items:center;
+      justify-content:center;
 
-.photo-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-}
+      overflow:hidden;
 
-.photo-grid img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:12px;
-  margin:0 !important;
-  cursor:pointer;
-  transition:.35s ease;
-}
+      background:transparent;
+      border:none;
+      box-shadow:none;
+    }
 
-.photo-grid img:hover{
-  transform:scale(1.03);
-  box-shadow:0 10px 30px rgba(124,92,255,.3);
-}
+    .about-slide{
+      max-width:100%;
+      max-height:100%;
 
-.hidden-photo{
-  display:none !important;
-}
+      width:auto;
+      height:auto;
 
-.view-more-btn{
-  display:block;
-  margin:2rem auto 0;
-  border:none;
-  padding:.8rem 1.8rem;
-  border-radius:999px;
-  background:linear-gradient(
-    135deg,
-    var(--accent),
-    var(--accent2)
-  );
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s ease;
-}
+      object-fit:contain;
 
-.view-more-btn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 12px 30px rgba(124,92,255,.35);
-}
+      border-radius:16px;
+
+      display:none !important;
+    }
+
+    .about-slide.active{
+      display:block !important;
+    }
+
+    .slide-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:50%;
+      background:rgba(0,0,0,.5);
+      color:white;
+      font-size:1.2rem;
+      cursor:pointer;
+      z-index:5;
+      transition:.3s ease;
+    }
+
+    .slide-btn:hover{
+      background:var(--accent);
+      transform:translateY(-50%) scale(1.1);
+    }
+
+    .slide-prev{
+      left:15px;
+    }
+
+    .slide-next{
+      right:15px;
+    }
+
+    .slide-dots{
+      position:absolute;
+      bottom:15px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:8px;
+      z-index:5;
+    }
+
+    .slide-dot{
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:rgba(255,255,255,.5);
+      cursor:pointer;
+      transition:.3s ease;
+    }
+
+    .slide-dot.active{
+      width:24px;
+      border-radius:10px;
+      background:var(--accent2);
+    }
 
 
-/* MOBILE */
+    /* =========================
+       PHOTO GRID
+    ========================= */
 
-@media(max-width:768px){
+    .about-gallery{
+      margin-top:3rem;
+    }
 
-  .about-top{
-    grid-template-columns:1fr;
-  }
+    .about-gallery-title{
+      font-size:2rem;
+      margin-bottom:1.5rem;
+      background:linear-gradient(
+        90deg,
+        #fff,
+        var(--accent)
+      );
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
 
-  .about-slideshow{
-    height:350px;
-  }
+    .photo-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
 
-  .about-info{
-    padding:1rem;
-  }
+    .photo-grid img{
+      width:100%;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      border-radius:12px;
+      margin:0 !important;
+      cursor:pointer;
+      transition:.35s ease;
+    }
 
-  .about-info h1{
-    font-size:2.2rem;
-  }
+    .photo-grid img:hover{
+      transform:scale(1.03);
+      box-shadow:0 10px 30px rgba(124,92,255,.3);
+    }
 
-  .photo-grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:8px;
-  }
+    .hidden-photo{
+      display:none !important;
+    }
 
-}
+    .view-more-btn{
+      display:block;
+      margin:2rem auto 0;
+      border:none;
+      padding:.8rem 1.8rem;
+      border-radius:999px;
+      background:linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent2)
+      );
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+      transition:.3s ease;
+    }
+
+    .view-more-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 30px rgba(124,92,255,.35);
+    }
+
+
+    /* MOBILE */
+
+    @media(max-width:768px){
+
+      .about-top{
+        grid-template-columns:1fr;
+      }
+
+      .about-slideshow{
+        height:350px;
+      }
+
+      .about-info{
+        padding:1rem;
+      }
+
+      .about-info h1{
+        font-size:2.2rem;
+      }
+
+      .photo-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:8px;
+      }
+
+    }
 
     a{
       color:var(--accent2);
@@ -921,74 +998,75 @@
         gap:1rem;
       }
     }
+
     .resume-container{
-  position:relative;
-  width:100%;
-  max-width:850px;
-  height:900px;
-  margin:2rem auto 0;
-  border-radius:20px;
-  overflow:hidden;
-  background:#111827;
-  border:1px solid rgba(255,255,255,0.1);
-  box-shadow:0 20px 50px rgba(0,0,0,0.35);
-}
+      position:relative;
+      width:100%;
+      max-width:850px;
+      height:900px;
+      margin:2rem auto 0;
+      border-radius:20px;
+      overflow:hidden;
+      background:#111827;
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    }
 
-.resume-pdf{
-  width:100%;
-  height:100%;
-  border:none;
-  display:block;
-  background:white;
-}
+    .resume-pdf{
+      width:100%;
+      height:100%;
+      border:none;
+      display:block;
+      background:white;
+    }
 
-.resume-download{
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%) translateY(10px);
+    .resume-download{
+      position:absolute;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%) translateY(10px);
 
-  padding:.8rem 1.5rem;
-  border-radius:999px;
+      padding:.8rem 1.5rem;
+      border-radius:999px;
 
-  background:linear-gradient(
-    135deg,
-    var(--accent),
-    var(--accent2)
-  );
+      background:linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent2)
+      );
 
-  color:white;
-  text-decoration:none;
-  font-weight:600;
+      color:white;
+      text-decoration:none;
+      font-weight:600;
 
-  opacity:0;
-  transition:.3s ease;
+      opacity:0;
+      transition:.3s ease;
 
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    }
 
-.resume-container:hover .resume-download{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
+    .resume-container:hover .resume-download{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
 
-.resume-download:hover{
-  transform:translateX(-50%) translateY(-3px);
-  box-shadow:0 15px 35px rgba(124,92,255,0.45);
-}
+    .resume-download:hover{
+      transform:translateX(-50%) translateY(-3px);
+      box-shadow:0 15px 35px rgba(124,92,255,0.45);
+    }
 
-@media(max-width:768px){
+    @media(max-width:768px){
 
-  .resume-container{
-    height:700px;
-  }
+      .resume-container{
+        height:700px;
+      }
 
-  .resume-download{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
-  }
+      .resume-download{
+        opacity:1;
+        transform:translateX(-50%) translateY(0);
+      }
 
-}
+    }
 
   </style>
 
@@ -998,16 +1076,12 @@
 
 <body>
 
-  <!-- STARS -->
   <div class="stars" id="stars"></div>
 
-  <!-- ELECTRICITY -->
   <div class="electricity" id="electricity"></div>
 
-  <!-- GLOW -->
   <div class="blob"></div>
 
-  <!-- LANDING -->
   <main id="landing-page">
 
     <img
@@ -1054,6 +1128,14 @@
 
       </button>
 
+      <button
+        class="btn"
+        onclick="showMessage()">
+
+        Message
+
+      </button>
+
     </div>
 
     <div class="info-cards">
@@ -1096,7 +1178,7 @@
 
       <div
         class="card"
-        onclick="window.location.href='mailto:abhijeetvaibhav@belicit.com'"
+        onclick="showMessage()"
         style="cursor:pointer;"
       >
         <div class="icon">
@@ -1136,7 +1218,6 @@
 
   </main>
 
-  <!-- NAVBAR -->
   <nav id="top-nav">
 
     <div class="nav-logo">
@@ -1159,6 +1240,10 @@
         About
       </span>
 
+      <span onclick="showMessage()">
+        Message
+      </span>
+
       <span onclick="showProjects()">
         Projects
       </span>
@@ -1171,7 +1256,6 @@
 
   </nav>
 
-  <!-- MAIN CONTENT -->
   <div id="site-contents">
 
     <section
@@ -1272,9 +1356,7 @@
       "proj-count"
     ).innerText = projects.length;
 
-    /* NAVIGATION */
-
-/* NAVIGATION + BROWSER HISTORY */
+    /* NAVIGATION + BROWSER HISTORY */
 
 function showLanding(addHistory = true){
 
@@ -1321,11 +1403,7 @@ function showAbout(addHistory = true){
 
     <div class="about-page">
 
-      <!-- TOP SECTION -->
-
       <div class="about-top">
-
-        <!-- LEFT : NORMAL INFO -->
 
         <div class="about-info">
 
@@ -1377,12 +1455,8 @@ function showAbout(addHistory = true){
         </div>
 
 
-        <!-- RIGHT : SLIDESHOW -->
-
-            <div class="about-slideshow" id="about-slideshow">
+        <div class="about-slideshow" id="about-slideshow">
     
-              <!-- Photos will be loaded automatically -->
-            
               <button
                 class="slide-btn slide-prev"
                 onclick="changeSlide(-1)">
@@ -1404,8 +1478,6 @@ function showAbout(addHistory = true){
       </div>
 
 
-      <!-- BOTTOM PHOTO GRID -->
-
       <div class="about-gallery">
 
         <h2 class="about-gallery-title">
@@ -1416,9 +1488,7 @@ function showAbout(addHistory = true){
         class="photo-grid"
         id="photo-grid">
       
-        <!-- Photos will be loaded automatically -->
-      
-      </div>
+        </div>
 
 
         <button
@@ -1705,6 +1775,55 @@ window.showMorePhotos = function(){
 };
 }
 
+function showMessage(addHistory = true){
+
+  if(addHistory){
+    history.pushState(
+      {page:"message"},
+      "",
+      window.location.pathname + "#message"
+    );
+  }
+
+  prepareMainSite();
+
+  document.getElementById('main-content').style.display='block';
+  document.getElementById('projects-section').style.display='none';
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="contact-container">
+      <h2 class="contact-title">Send a Message</h2>
+      <form class="contact-form" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label for="contact-name">Name</label>
+          <input type="text" id="contact-name" class="form-control" placeholder="Your Name" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="contact-email">Email</label>
+          <input type="email" id="contact-email" class="form-control" placeholder="your.email@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="contact-msg">Message</label>
+          <textarea id="contact-msg" class="form-control" placeholder="Type your message here..." required></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="showLanding()">Cancel</button>
+          <button type="submit" class="btn">Send</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+  alert("Thank you for your message! It has been submitted.");
+  showLanding();
+}
+
 function showResume(){
 
   prepareMainSite();
@@ -1886,6 +2005,10 @@ window.addEventListener('popstate', function(event){
     showAbout(false);
   }
 
+  else if(state.page === "message"){
+    showMessage(false);
+  }
+
   else if(state.page === "projects"){
     showProjects(false);
   }
@@ -1907,43 +2030,6 @@ history.replaceState(
   "",
   window.location.pathname
 );
-    function loadProjectContent(idx){
-
-      const proj = projects[idx];
-
-      const mainContent =
-      document.getElementById(
-        'main-content'
-      );
-
-      document.getElementById(
-        'projects-section'
-      ).style.display='none';
-
-      mainContent.style.display='block';
-
-      const url =
-      `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
-
-      fetch(url)
-
-      .then(res=>res.text())
-
-      .then(md=>{
-
-        mainContent.innerHTML =
-        marked.parse(md);
-
-      })
-
-      .catch(()=>{
-
-        mainContent.innerHTML =
-        '<p>Could not load README.</p>';
-
-      });
-
-    }
 
     /* STARS */
 

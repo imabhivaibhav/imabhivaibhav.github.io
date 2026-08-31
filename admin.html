@@ -294,45 +294,85 @@
     }
 
     /* FETCH VISITOR ANALYTICS & AUTO CLEANUP */
-    async function fetchAnalytics() {
-      if (!supabaseClient) return;
+    /* FETCH VISITOR ANALYTICS WITH GROUPING & DEDUPLICATION */
+async function fetchAnalytics() {
+  if (!supabaseClient) return;
 
-      // Auto purge logs older than 7 days
-      try {
-        await supabaseClient.rpc('clean_old_visitor_logs');
-      } catch (e) {
-        console.error("Cleanup rpc error:", e);
-      }
+  // Auto purge logs older than 7 days
+  try {
+    await supabaseClient.rpc('clean_old_visitor_logs');
+  } catch (e) {
+    console.error("Cleanup rpc error:", e);
+  }
 
-      // Fetch Permanent Daily Views
-      const { data: daily } = await supabaseClient.from('daily_visitors').select('*').order('visit_date', { ascending: false });
-      const dailyTbody = document.getElementById('daily-views-rows');
-      if (!daily || daily.length === 0) {
-        dailyTbody.innerHTML = '<tr><td colspan="2" style="color:#888;">No daily records yet.</td></tr>';
-      } else {
-        dailyTbody.innerHTML = daily.map(d => `
-          <tr>
-            <td>${d.visit_date}</td>
-            <td><strong style="color: #5ce1e6;">${d.total_views}</strong></td>
-          </tr>
-        `).join('');
-      }
+  // Fetch Permanent Daily Views
+  const { data: daily } = await supabaseClient.from('daily_visitors').select('*').order('visit_date', { ascending: false });
+  const dailyTbody = document.getElementById('daily-views-rows');
+  if (!daily || daily.length === 0) {
+    dailyTbody.innerHTML = '<tr><td colspan="2" style="color:#888;">No daily records yet.</td></tr>';
+  } else {
+    dailyTbody.innerHTML = daily.map(d => `
+      <tr>
+        <td>${d.visit_date}</td>
+        <td><strong style="color: #5ce1e6;">${d.total_views}</strong></td>
+      </tr>
+    `).join('');
+  }
 
-      // Fetch Recent 7-Day Activity Logs
-      const { data: logs } = await supabaseClient.from('visitor_logs').select('*').order('created_at', { ascending: false }).limit(50);
-      const logsTbody = document.getElementById('visitor-log-rows');
-      if (!logs || logs.length === 0) {
-        logsTbody.innerHTML = '<tr><td colspan="3" style="color:#888;">No recent visitor logs.</td></tr>';
-      } else {
-        logsTbody.innerHTML = logs.map(l => `
-          <tr>
-            <td style="font-size:0.85rem;">${l.location || 'Unknown'} <br><span style="color:#888; font-size:0.75rem;">${l.user_ip || ''}</span></td>
-            <td><span style="color: #7c5cff; font-weight: 600;">${l.tab_name}</span></td>
-            <td style="font-size:0.8rem; color:#aaa;">${new Date(l.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-          </tr>
-        `).join('');
+  // Fetch Recent Activity Logs
+  const { data: logs } = await supabaseClient.from('visitor_logs').select('*').order('created_at', { ascending: false }).limit(100);
+  const logsTbody = document.getElementById('visitor-log-rows');
+
+  if (!logs || logs.length === 0) {
+    logsTbody.innerHTML = '<tr><td colspan="3" style="color:#888;">No recent visitor logs.</td></tr>';
+    return;
+  }
+
+  // AGGREGATION LOGIC: Consecutive logs from same IP/Visitor group system
+  const groupedLogs = [];
+  let currentGroup = null;
+
+  logs.forEach(log => {
+    const logIp = log.user_ip || 'N/A';
+    const logVisitor = log.visitor_id;
+
+    if (currentGroup && (currentGroup.ip === logIp || currentGroup.visitorId === logVisitor)) {
+      // Same Session/IP: Tab ko check karke add karein agar pehle se last added tab same nahi hai
+      if (currentGroup.tabs[0] !== log.tab_name) {
+        currentGroup.tabs.unshift(log.tab_name); // Chronological order maintain karne ke liye
       }
+      currentGroup.latestTime = log.created_at; // Update time bounds
+    } else {
+      // New Session or New IP
+      if (currentGroup) {
+        groupedLogs.push(currentGroup);
+      }
+      currentGroup = {
+        visitorId: logVisitor,
+        ip: logIp,
+        location: log.location || 'Unknown',
+        tabs: [log.tab_name],
+        time: log.created_at
+      };
     }
+  });
+
+  if (currentGroup) {
+    groupedLogs.push(currentGroup);
+  }
+
+  // Render Grouped Rows
+  logsTbody.innerHTML = groupedLogs.map(g => {
+    const tabChain = g.tabs.map(t => `<span style="background: rgba(124, 92, 255, 0.15); color: #7c5cff; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">${t}</span>`).join(' ➔ ');
+    return `
+      <tr>
+        <td style="font-size:0.85rem;">${g.location} <br><span style="color:#888; font-size:0.75rem;">${g.ip}</span></td>
+        <td><div style="display: flex; gap: 5px; flex-wrap: wrap; align-items: center;">${tabChain}</div></td>
+        <td style="font-size:0.8rem; color:#aaa; white-space: nowrap;">${new Date(g.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+      </tr>
+    `;
+  }).join('');
+}
 
     window.handleAdminLogin = async function(event) {
       event.preventDefault();

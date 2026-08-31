@@ -14,7 +14,7 @@
     
     h1, h2 { background: linear-gradient(90deg, #fff, #7c5cff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
-    /* Login Screen */
+    /* Login Form */
     .login-box { max-width: 400px; margin: 100px auto; text-align: center; }
     .form-control { width: 100%; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; margin-bottom: 1rem; outline: none; }
     
@@ -31,20 +31,25 @@
     tr.msg-row { cursor: pointer; transition: 0.2s; }
     tr.msg-row:hover { background: rgba(124, 92, 255, 0.1); }
     
-    /* Side Drawer Panel */
+    /* Drawer */
     .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: flex-end; z-index: 100; }
     .drawer { width: 100%; max-width: 450px; background: #0f172a; height: 100%; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid rgba(255,255,255,0.1); }
     .drawer-body { background: rgba(255,255,255,0.03); padding: 1.2rem; border-radius: 12px; margin-top: 1.5rem; line-height: 1.6; white-space: pre-wrap; }
   </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
   <div id="auth-section" class="card login-box">
     <h2>Admin Login</h2>
     <p style="color: #aaa; margin-bottom: 1.5rem; font-size: 0.9rem;">Sign in to view portfolio messages</p>
-    <input type="email" id="admin-email" class="form-control" placeholder="Admin Email" />
-    <input type="password" id="admin-pass" class="form-control" placeholder="Password" />
-    <button onclick="login()" class="btn" style="width: 100%;">Login to Terminal</button>
+    
+    <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+      <input type="email" id="admin-email" class="form-control" placeholder="Admin Email" required />
+      <input type="password" id="admin-pass" class="form-control" placeholder="Password" required />
+      <button type="submit" id="login-btn" class="btn" style="width: 100%;">Login to Terminal</button>
+    </form>
   </div>
 
   <div id="dashboard-section" class="container card" style="display: none;">
@@ -53,7 +58,7 @@
         <h1>Personal Messages</h1>
         <p style="color: #aaa; font-size: 0.9rem;">Live submissions from your landing page</p>
       </div>
-      <button onclick="logout()" class="btn-danger">Logout</button>
+      <button onclick="handleLogout()" class="btn-danger">Logout</button>
     </div>
 
     <table>
@@ -89,15 +94,19 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    /* SUPABASE INITIALIZATION */
+    const SUPABASE_URL = 'https://hgbmebmjrajbwhqjaeeu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnYm1lYm1qcmFqYndocWphZWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNTY2NTMsImV4cCI6MjEwMzczMjY1M30.fPZ_sJEeACTkj64sapeszIywAc9At1Ytb1krdEubtLE';
+    
+    let supabaseClient = null;
+    if (window.supabase) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 
-    let activeMsgId = null;
-
+    // Auth Check
     async function checkSession() {
+      if (!supabaseClient) return;
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
         document.getElementById('auth-section').style.display = 'none';
@@ -107,18 +116,45 @@
       }
     }
 
-    async function login() {
+    // Login Handler Function
+    window.handleAdminLogin = async function(event) {
+      event.preventDefault();
+      
+      const btn = document.getElementById('login-btn');
+      btn.innerText = 'Verifying...';
+      btn.disabled = true;
+
       const email = document.getElementById('admin-email').value;
       const password = document.getElementById('admin-pass').value;
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) alert(error.message);
-      else checkSession();
-    }
 
-    async function logout() {
-      await supabaseClient.auth.signOut();
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (error) {
+          alert("Login Failed: " + error.message);
+        } else {
+          document.getElementById('auth-section').style.display = 'none';
+          document.getElementById('dashboard-section').style.display = 'block';
+          fetchMessages();
+          listenToRealtime();
+        }
+      } catch (err) {
+        alert("Authentication Error: " + err.message);
+      } finally {
+        btn.innerText = 'Login to Terminal';
+        btn.disabled = false;
+      }
+    };
+
+    window.handleLogout = async function() {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
       location.reload();
-    }
+    };
 
     async function fetchMessages() {
       const { data: messages, error } = await supabaseClient
@@ -129,7 +165,7 @@
       if (error) return console.error(error);
 
       const tbody = document.getElementById('message-rows');
-      if (messages.length === 0) {
+      if (!messages || messages.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">No messages received yet.</td></tr>';
         return;
       }
@@ -147,8 +183,7 @@
       `).join('');
     }
 
-    function openDrawer(id, name, email, msg, date) {
-      activeMsgId = id;
+    window.openDrawer = function(id, name, email, msg, date) {
       document.getElementById('drawer-name').innerText = decodeURIComponent(name);
       document.getElementById('drawer-email').innerText = email;
       document.getElementById('drawer-date').innerText = date;
@@ -156,22 +191,22 @@
       document.getElementById('delete-btn').onclick = () => deleteMessage(id);
       
       document.getElementById('drawer-overlay').style.display = 'flex';
-    }
+    };
 
-    function closeDrawer() {
+    window.closeDrawer = function() {
       document.getElementById('drawer-overlay').style.display = 'none';
-    }
+    };
 
-    async function deleteMessage(id) {
+    window.deleteMessage = async function(id) {
       if (confirm("Delete this message permanently?")) {
         await supabaseClient.from('personal_messages').delete().eq('id', id);
         closeDrawer();
         fetchMessages();
       }
-    }
+    };
 
-    // Realtime Sync (Naya message aate hi auto refresh hoga)
     function listenToRealtime() {
+      if (!supabaseClient) return;
       supabaseClient
         .channel('schema-db-changes')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'personal_messages' }, () => {
@@ -180,7 +215,7 @@
         .subscribe();
     }
 
-    checkSession();
+    document.addEventListener("DOMContentLoaded", checkSession);
   </script>
 </body>
 </html>

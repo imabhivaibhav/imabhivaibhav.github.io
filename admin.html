@@ -65,9 +65,48 @@
     <div class="card header-bar">
       <div>
         <h1>Admin Control Terminal</h1>
-        <p style="color: #aaa; font-size: 0.9rem;">Manage user accounts, messages & portfolio projects</p>
+        <p style="color: #aaa; font-size: 0.9rem;">Manage user accounts, messages, portfolio projects & analytics</p>
       </div>
       <button onclick="handleLogout()" class="btn-danger">Logout</button>
+    </div>
+
+    <!-- NEW SECTION: VISITOR ANALYTICS -->
+    <div class="card">
+      <h2>📊 Visitor Analytics & Tab Activity</h2>
+      <p style="color: #aaa; font-size: 0.85rem; margin-top: 4px;">Track visitor trends and tab interactions in real-time.</p>
+      
+      <div class="grid-2" style="margin-top: 1.5rem;">
+        <div>
+          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">📅 Daily Views (Permanent)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Total Views</th>
+              </tr>
+            </thead>
+            <tbody id="daily-views-rows">
+              <tr><td colspan="2" style="color:#888;">Loading daily stats...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">🕒 Activity Logs (Auto-Clears 7 Days)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Location / IP</th>
+                <th>Tab Visited</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="visitor-log-rows">
+              <tr><td colspan="3" style="color:#888;">Loading activity logs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <div class="grid-2">
@@ -205,11 +244,53 @@
       if (session) {
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
+        fetchAnalytics();
         fetchMessages();
         fetchProjects();
       } else {
         document.getElementById('auth-section').style.display = 'block';
         document.getElementById('dashboard-section').style.display = 'none';
+      }
+    }
+
+    /* FETCH VISITOR ANALYTICS & AUTO CLEANUP */
+    async function fetchAnalytics() {
+      if (!supabaseClient) return;
+
+      // Auto purge logs older than 7 days
+      try {
+        await supabaseClient.rpc('clean_old_visitor_logs');
+      } catch (e) {
+        console.error("Cleanup rpc error:", e);
+      }
+
+      // Fetch Permanent Daily Views
+      const { data: daily } = await supabaseClient.from('daily_visitors').select('*').order('visit_date', { ascending: false });
+      const dailyTbody = document.getElementById('daily-views-rows');
+      if (!daily || daily.length === 0) {
+        dailyTbody.innerHTML = '<tr><td colspan="2" style="color:#888;">No daily records yet.</td></tr>';
+      } else {
+        dailyTbody.innerHTML = daily.map(d => `
+          <tr>
+            <td>${d.visit_date}</td>
+            <td><strong style="color: #5ce1e6;">${d.total_views}</strong></td>
+          </tr>
+        `).join('');
+      }
+
+      // Fetch Recent 7-Day Activity Logs
+      const { data: logs } = await supabaseClient.from('visitor_logs').select('*').order('created_at', { ascending: false }).limit(30);
+      const logsTbody = document.getElementById('visitor-log-rows');
+      if (!logs || logs.length === 0) {
+        logsTbody.innerHTML = '<tr><td colspan="3" style="color:#888;">No recent visitor logs.</td></tr>';
+      } else {
+        logsTbody.innerHTML = logs.map(l => `
+          <tr>
+            <td style="font-size:0.85rem;">${l.location || 'Unknown'} <br><span style="color:#888; font-size:0.75rem;">${l.user_ip || ''}</span></td>
+            <td><span style="color: #7c5cff; font-weight: 600;">${l.tab_name}</span></td>
+            <td style="font-size:0.8rem; color:#aaa;">${new Date(l.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+          </tr>
+        `).join('');
       }
     }
 

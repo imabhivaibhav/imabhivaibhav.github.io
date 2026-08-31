@@ -456,6 +456,15 @@ window.addEventListener('popstate', function(event) {
 history.replaceState({ page: "landing" }, "", window.location.pathname);
 
 document.addEventListener('DOMContentLoaded', () => {
+  
+  // FIX FOR MAILTO LINKS: Stop navigation interruption for direct email clicks
+  document.addEventListener('click', (e) => {
+    const mailLink = e.target.closest('a[href^="mailto:"]');
+    if (mailLink) {
+      e.stopPropagation();
+    }
+  }, true);
+
   const starsContainer = document.getElementById('stars');
   if (starsContainer) {
     for (let i = 0; i < 260; i++) {
@@ -477,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bolt.classList.add('bolt');
       bolt.style.left = Math.random() * 100 + '%';
       bolt.style.height = (Math.random() * 160 + 60) + 'px';
-      bolt.style.animationDuration = (Math.random() * 2 + 1.2) + 's';
+      bolt.style.animationDuration = (Math.random() * 10 + 1.2) + 's';
       bolt.style.animationDelay = Math.random() * -5 + 's';
       electricity.appendChild(bolt);
     }

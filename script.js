@@ -4,26 +4,33 @@
 // Apne Supabase Dashboard se URL aur Anon Key yahan replace karein
 const SUPABASE_URL = 'https://hgbmebmjrajbwhqjaeeu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnYm1lYm1qcmFqYndocWphZWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNTY2NTMsImV4cCI6MjEwMzczMjY1M30.fPZ_sJEeACTkj64sapeszIywAc9At1Ytb1krdEubtLE';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+
+let supabaseClient = null;
+if (window.supabase) {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
 
 /* =========================================================
    2. TYPED EFFECT INITIALIZATION
 ========================================================= */
-const typed = new Typed('#typed', {
-  strings: [
-    'Passionate about AI',
-    'Machine Learning Enthusiast',
-    'Software Developer',
-    'Open Source Contributor'
-  ],
-  typeSpeed: 50,
-  backSpeed: 40,
-  backDelay: 1800,
-  loop: true,
-  showCursor: false
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById('typed')) {
+    new Typed('#typed', {
+      strings: [
+        'Passionate about AI',
+        'Machine Learning Enthusiast',
+        'Software Developer',
+        'Open Source Contributor'
+      ],
+      typeSpeed: 50,
+      backSpeed: 40,
+      backDelay: 1800,
+      loop: true,
+      showCursor: false
+    });
+  }
 });
-
 
 /* =========================================================
    3. PROJECTS DATA DIRECTORY
@@ -66,16 +73,15 @@ const projects = [
   }
 ];
 
-// Set project count badge dynamically
-if (document.getElementById("proj-count")) {
-  document.getElementById("proj-count").innerText = projects.length;
-}
-
+window.addEventListener('load', () => {
+  const projCount = document.getElementById("proj-count");
+  if (projCount) projCount.innerText = projects.length;
+});
 
 /* =========================================================
    4. NAVIGATION & VIEW ROUTING
 ========================================================= */
-function showLanding(addHistory = true) {
+window.showLanding = function(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "landing" }, "", window.location.pathname);
   }
@@ -83,16 +89,16 @@ function showLanding(addHistory = true) {
   document.getElementById('electricity').style.display = 'block';
   document.getElementById('top-nav').style.display = 'none';
   document.getElementById('site-contents').style.display = 'none';
-}
+};
 
-function prepareMainSite() {
+window.prepareMainSite = function() {
   document.getElementById('landing-page').style.display = 'none';
   document.getElementById('electricity').style.display = 'none';
   document.getElementById('top-nav').style.display = 'flex';
   document.getElementById('site-contents').style.display = 'block';
-}
+};
 
-function showAbout(addHistory = true) {
+window.showAbout = function(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "about" }, "", window.location.pathname + "#about");
   }
@@ -132,7 +138,6 @@ function showAbout(addHistory = true) {
     </div>
   `;
 
-  // Fetch Slideshow and Gallery Photos dynamically
   const photoListURL = 'https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/photo.txt?t=' + Date.now();
   const photoBaseURL = 'https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/';
 
@@ -142,6 +147,8 @@ function showAbout(addHistory = true) {
       const photoFiles = text.split(/\r?\n/).map(file => file.trim()).filter(file => file.length > 0);
       const slideshow = document.getElementById('about-slideshow');
       const dots = document.getElementById('slide-dots');
+
+      if (!slideshow || !dots) return;
 
       photoFiles.forEach((file, index) => {
         const img = document.createElement('img');
@@ -159,13 +166,15 @@ function showAbout(addHistory = true) {
       });
 
       const grid = document.getElementById('photo-grid');
-      photoFiles.forEach((file, index) => {
-        const img = document.createElement('img');
-        img.src = photoBaseURL + file;
-        img.alt = 'Photo ' + (index + 1);
-        if (index >= 3) img.classList.add('hidden-photo');
-        grid.appendChild(img);
-      });
+      if (grid) {
+        photoFiles.forEach((file, index) => {
+          const img = document.createElement('img');
+          img.src = photoBaseURL + file;
+          img.alt = 'Photo ' + (index + 1);
+          if (index >= 3) img.classList.add('hidden-photo');
+          grid.appendChild(img);
+        });
+      }
 
       const viewMore = document.querySelector('.view-more-btn');
       if (photoFiles.length <= 3 && viewMore) {
@@ -173,7 +182,7 @@ function showAbout(addHistory = true) {
       }
     })
     .catch(error => console.error('Could not load photos:', error));
-}
+};
 
 let currentSlide = 0;
 window.showSlide = function(index) {
@@ -205,7 +214,7 @@ window.showMorePhotos = function() {
 /* =========================================================
    5. MESSAGE SECTION & SUPABASE SUBMISSION
 ========================================================= */
-function showMessage(addHistory = true) {
+window.showMessage = function(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "message" }, "", window.location.pathname + "#message");
   }
@@ -240,9 +249,9 @@ function showMessage(addHistory = true) {
       </form>
     </div>
   `;
-}
+};
 
-async function handleFormSubmit(event) {
+window.handleFormSubmit = async function(event) {
   event.preventDefault();
 
   const submitBtn = document.getElementById('submit-btn');
@@ -253,8 +262,14 @@ async function handleFormSubmit(event) {
   const email = document.getElementById('contact-email').value;
   const message = document.getElementById('contact-msg').value;
 
-  // Save message directly to Supabase Table
-  const { data, error } = await supabase
+  if (!supabaseClient) {
+    alert("Supabase is not initialized. Check your credentials.");
+    submitBtn.innerText = 'Send';
+    submitBtn.disabled = false;
+    return;
+  }
+
+  const { data, error } = await supabaseClient
     .from('personal_messages')
     .insert([{ name, email, message }]);
 
@@ -268,12 +283,12 @@ async function handleFormSubmit(event) {
 
   submitBtn.innerText = 'Send';
   submitBtn.disabled = false;
-}
+};
 
 /* =========================================================
    6. RESUME & PROJECTS SECTION
 ========================================================= */
-function showResume() {
+window.showResume = function() {
   prepareMainSite();
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('projects-section').style.display = 'none';
@@ -293,9 +308,9 @@ function showResume() {
       </a>
     </div>
   `;
-}
+};
 
-function showProjects(addHistory = true) {
+window.showProjects = function(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "projects" }, "", window.location.pathname + "#projects");
   }
@@ -326,9 +341,9 @@ function showProjects(addHistory = true) {
     container.addEventListener('mouseenter', () => container.classList.add('flipped'));
     container.addEventListener('mouseleave', () => container.classList.remove('flipped'));
   });
-}
+};
 
-function loadProjectContent(idx, addHistory = true) {
+window.loadProjectContent = function(idx, addHistory = true) {
   const proj = projects[idx];
 
   if (addHistory) {
@@ -349,10 +364,10 @@ function loadProjectContent(idx, addHistory = true) {
     .catch(() => {
       mainContent.innerHTML = '<p>Could not load README.</p>';
     });
-}
+};
 
 /* =========================================================
-   7. BROWSER HISTORY CONTROL & CANVAS ANIMATIONS
+   7. BROWSER HISTORY & BACKGROUND ANIMATIONS
 ========================================================= */
 window.addEventListener('popstate', function(event) {
   const state = event.state;
@@ -371,50 +386,48 @@ window.addEventListener('popstate', function(event) {
 
 history.replaceState({ page: "landing" }, "", window.location.pathname);
 
-// Stars animation builder
-const starsContainer = document.getElementById('stars');
-if (starsContainer) {
-  for (let i = 0; i < 260; i++) {
-    const star = document.createElement('div');
-    star.classList.add('star');
-    if (Math.random() > 0.82) star.classList.add('big');
-    star.style.left = Math.random() * 100 + 'vw';
-    star.style.top = Math.random() * 100 + 'vh';
-    star.style.animationDuration = (Math.random() * 10 + 8) + 's';
-    star.style.animationDelay = Math.random() * -20 + 's';
-    starsContainer.appendChild(star);
+document.addEventListener('DOMContentLoaded', () => {
+  const starsContainer = document.getElementById('stars');
+  if (starsContainer) {
+    for (let i = 0; i < 260; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      if (Math.random() > 0.82) star.classList.add('big');
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = Math.random() * 100 + 'vh';
+      star.style.animationDuration = (Math.random() * 10 + 8) + 's';
+      star.style.animationDelay = Math.random() * -20 + 's';
+      starsContainer.appendChild(star);
+    }
   }
-}
 
-// Electricity animation builder
-const electricity = document.getElementById('electricity');
-if (electricity) {
-  for (let i = 0; i < 60; i++) {
-    const bolt = document.createElement('div');
-    bolt.classList.add('bolt');
-    bolt.style.left = Math.random() * 100 + '%';
-    bolt.style.height = (Math.random() * 160 + 60) + 'px';
-    bolt.style.animationDuration = (Math.random() * 2 + 1.2) + 's';
-    bolt.style.animationDelay = Math.random() * -5 + 's';
-    electricity.appendChild(bolt);
+  const electricity = document.getElementById('electricity');
+  if (electricity) {
+    for (let i = 0; i < 60; i++) {
+      const bolt = document.createElement('div');
+      bolt.classList.add('bolt');
+      bolt.style.left = Math.random() * 100 + '%';
+      bolt.style.height = (Math.random() * 160 + 60) + 'px';
+      bolt.style.animationDuration = (Math.random() * 2 + 1.2) + 's';
+      bolt.style.animationDelay = Math.random() * -5 + 's';
+      electricity.appendChild(bolt);
+    }
   }
-}
 
-// Avatar Interactive Movement
-const avatar = document.getElementById('landing-avatar');
-if (avatar) {
-  avatar.addEventListener('mouseenter', () => {
-    const randomX = (Math.random() - 0.5) * 520;
-    const randomY = (Math.random() - 0.5) * 320;
-    avatar.style.transform = `translate(${randomX}px,${randomY}px) rotate(${Math.random() * 30 - 15}deg) scale(1.08)`;
-  });
+  const avatar = document.getElementById('landing-avatar');
+  if (avatar) {
+    avatar.addEventListener('mouseenter', () => {
+      const randomX = (Math.random() - 0.5) * 520;
+      const randomY = (Math.random() - 0.5) * 320;
+      avatar.style.transform = `translate(${randomX}px,${randomY}px) rotate(${Math.random() * 30 - 15}deg) scale(1.08)`;
+    });
 
-  avatar.addEventListener('mouseleave', () => {
-    setTimeout(() => {
-      avatar.style.transform = 'translate(0px,0px) rotate(0deg) scale(1)';
-    }, 350);
-  });
-}
+    avatar.addEventListener('mouseleave', () => {
+      setTimeout(() => {
+        avatar.style.transform = 'translate(0px,0px) rotate(0deg) scale(1)';
+      }, 350);
+    });
+  }
 
-// Initial render
-showLanding();
+  showLanding();
+});

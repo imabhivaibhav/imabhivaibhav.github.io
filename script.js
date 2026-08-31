@@ -1,10 +1,8 @@
 /* =========================================================
    1. SUPABASE CONFIGURATION
 ========================================================= */
-// Apne Supabase Dashboard se URL aur Anon Key yahan replace karein
 const SUPABASE_URL = 'https://hgbmebmjrajbwhqjaeeu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnYm1lYm1qcmFqYndocWphZWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNTY2NTMsImV4cCI6MjEwMzczMjY1M30.fPZ_sJEeACTkj64sapeszIywAc9At1Ytb1krdEubtLE';
-
 
 let supabaseClient = null;
 if (window.supabase) {
@@ -33,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================================================
-   3. PROJECTS DATA DIRECTORY
+   3. PROJECTS DATA DIRECTORY (STATIC)
 ========================================================= */
 const projects = [
   {
@@ -286,7 +284,7 @@ window.handleFormSubmit = async function(event) {
 };
 
 /* =========================================================
-   6. RESUME & PROJECTS SECTION
+   6. RESUME & DYNAMIC PROJECTS SECTION
 ========================================================= */
 window.showResume = function() {
   prepareMainSite();
@@ -310,7 +308,7 @@ window.showResume = function() {
   `;
 };
 
-window.showProjects = function(addHistory = true) {
+window.showProjects = async function(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "projects" }, "", window.location.pathname + "#projects");
   }
@@ -319,10 +317,38 @@ window.showProjects = function(addHistory = true) {
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('projects-section').style.display = 'block';
 
+  let allProjects = [...projects];
+
+  // Fetch dynamic projects from Supabase
+  if (supabaseClient) {
+    try {
+      const { data: dbProjects } = await supabaseClient
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (dbProjects && dbProjects.length > 0) {
+        const formatted = dbProjects.map(p => ({
+          name: p.name,
+          repo: p.repo,
+          readme: p.readme,
+          img: p.img,
+          desc: p.desc_text
+        }));
+        allProjects = [...allProjects, ...formatted];
+      }
+    } catch (err) {
+      console.error("Error fetching dynamic projects:", err);
+    }
+  }
+
+  const projCount = document.getElementById("proj-count");
+  if (projCount) projCount.innerText = allProjects.length;
+
   let html = '';
-  projects.forEach((proj, idx) => {
+  allProjects.forEach((proj) => {
     html += `
-      <div class="card-container" onclick="loadProjectContent(${idx})">
+      <div class="card-container" onclick="loadDynamicProjectContent('${proj.repo}')">
         <div class="card-inner">
           <div class="card-front">
             <img src="${proj.img}" class="card-img">
@@ -343,26 +369,27 @@ window.showProjects = function(addHistory = true) {
   });
 };
 
-window.loadProjectContent = function(idx, addHistory = true) {
-  const proj = projects[idx];
-
+window.loadDynamicProjectContent = function(repoPath, addHistory = true) {
   if (addHistory) {
-    history.pushState({ page: "project", projectIndex: idx }, "", window.location.pathname + "#project-" + idx);
+    history.pushState({ page: "project", repo: repoPath }, "", window.location.pathname + "#project");
   }
 
   const mainContent = document.getElementById('main-content');
   document.getElementById('projects-section').style.display = 'none';
   mainContent.style.display = 'block';
 
-  const url = `https://raw.githubusercontent.com/${proj.repo}/main/README.md`;
+  const url = `https://raw.githubusercontent.com/${repoPath}/main/README.md`;
 
   fetch(url)
-    .then(res => res.text())
+    .then(res => {
+      if (!res.ok) throw new Error("README not found");
+      return res.text();
+    })
     .then(md => {
       mainContent.innerHTML = marked.parse(md);
     })
     .catch(() => {
-      mainContent.innerHTML = '<p>Could not load README.</p>';
+      mainContent.innerHTML = '<p style="text-align:center; padding: 2rem;">Could not load README from GitHub repository.</p>';
     });
 };
 
@@ -380,7 +407,7 @@ window.addEventListener('popstate', function(event) {
   } else if (state.page === "projects") {
     showProjects(false);
   } else if (state.page === "project") {
-    loadProjectContent(state.projectIndex, false);
+    loadDynamicProjectContent(state.repo, false);
   }
 });
 

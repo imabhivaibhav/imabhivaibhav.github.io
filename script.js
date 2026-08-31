@@ -10,7 +10,7 @@ if (window.supabase) {
 }
 
 /* =========================================================
-   TOAST NOTIFICATION SYSTEM (REPLACES CHROME ALERTS)
+   2. CUSTOM TOAST NOTIFICATION (NO CHROME ALERTS)
 ========================================================= */
 window.showToast = function(msg, type = 'success') {
   let toastContainer = document.getElementById('toast-container');
@@ -19,9 +19,9 @@ window.showToast = function(msg, type = 'success') {
     toastContainer.id = 'toast-container';
     toastContainer.style.cssText = `
       position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
+      bottom: 25px;
+      right: 25px;
+      z-index: 99999;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -31,28 +31,29 @@ window.showToast = function(msg, type = 'success') {
 
   const toast = document.createElement('div');
   toast.style.cssText = `
-    background: ${type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)'};
-    color: white;
-    padding: 12px 20px;
+    background: ${type === 'error' ? 'rgba(239, 68, 68, 0.92)' : 'rgba(16, 185, 129, 0.92)'};
+    color: #ffffff;
+    padding: 12px 22px;
     border-radius: 12px;
     font-size: 0.9rem;
     font-weight: 600;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    animation: slideIn 0.3s ease;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
   `;
   toast.innerText = msg;
   toastContainer.appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transition = 'opacity 0.3s ease';
+    toast.style.transform = 'translateY(10px)';
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 };
 
 /* =========================================================
-   2. TYPED EFFECT INITIALIZATION
+   3. TYPED EFFECT INITIALIZATION
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById('typed')) {
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================================================
-   3. PROJECTS DATA DIRECTORY (STATIC)
+   4. PROJECTS DATA DIRECTORY (STATIC)
 ========================================================= */
 const projects = [
   {
@@ -119,7 +120,7 @@ window.addEventListener('load', () => {
 });
 
 /* =========================================================
-   4. NAVIGATION & VIEW ROUTING
+   5. NAVIGATION & VIEW ROUTING
 ========================================================= */
 window.showLanding = function(addHistory = true) {
   if (addHistory) {
@@ -157,7 +158,6 @@ window.showAbout = function(addHistory = true) {
           <p><strong>Education:</strong> B.Tech + M.Tech (Dual Degree), Electrical Engineering</p>
           <p>Passionate about technology, AI, Machine Learning, and software development.</p>
           <p>I enjoy building practical projects and exploring new technologies.</p>
-
           <div class="about-links">
             <a href="https://github.com/Imabhivaibhav" target="_blank">GitHub</a>
             <a href="https://linkedin.com/in/theabhijeetvaibhav" target="_blank">LinkedIn</a>
@@ -254,7 +254,7 @@ window.showMorePhotos = function() {
 };
 
 /* =========================================================
-   5. MESSAGE SECTION & SUPABASE SUBMISSION (AUTO REDIRECT TO ABOUT)
+   6. MESSAGE SECTION & SUBMISSION WITH TOAST & REDIRECT
 ========================================================= */
 window.showMessage = function(addHistory = true) {
   if (addHistory) {
@@ -305,7 +305,7 @@ window.handleFormSubmit = async function(event) {
   const message = document.getElementById('contact-msg').value;
 
   if (!supabaseClient) {
-    showToast("Supabase is not initialized.", "error");
+    showToast("Supabase client is not loaded.", "error");
     submitBtn.innerText = 'Send';
     submitBtn.disabled = false;
     return;
@@ -317,18 +317,17 @@ window.handleFormSubmit = async function(event) {
 
   if (error) {
     showToast("Error: " + error.message, "error");
+    submitBtn.innerText = 'Send';
+    submitBtn.disabled = false;
   } else {
-    showToast("Thank you! Your message has been sent successfully.", "success");
+    showToast("Message sent successfully!", "success");
     document.getElementById('contact-form').reset();
-    showAbout(); // Redirects to About Page
+    showAbout(); // Dynamic redirect to About section
   }
-
-  submitBtn.innerText = 'Send';
-  submitBtn.disabled = false;
 };
 
 /* =========================================================
-   6. RESUME & DYNAMIC PROJECTS SECTION
+   7. RESUME & DYNAMIC PROJECTS SECTION
 ========================================================= */
 window.showResume = function() {
   prepareMainSite();
@@ -437,7 +436,7 @@ window.loadDynamicProjectContent = function(repoPath, addHistory = true) {
 };
 
 /* =========================================================
-   7. BROWSER HISTORY & BACKGROUND ANIMATIONS
+   8. BROWSER HISTORY & BACKGROUND ANIMATIONS
 ========================================================= */
 window.addEventListener('popstate', function(event) {
   const state = event.state;

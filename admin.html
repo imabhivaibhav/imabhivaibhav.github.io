@@ -35,8 +35,8 @@
     
     #dashboard-section { display: none; }
 
-    /* SIDE DRAWER STYLES */
-    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: flex-end; z-index: 999; backdrop-filter: blur(4px); }
+    /* DRAWER OVERLAY */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: flex-end; z-index: 9999; backdrop-filter: blur(4px); }
     .drawer { width: 100%; max-width: 450px; background: #0f172a; height: 100%; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid rgba(255,255,255,0.1); box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
     .drawer-body { background: rgba(255,255,255,0.03); padding: 1.2rem; border-radius: 12px; margin-top: 1.5rem; line-height: 1.6; white-space: pre-wrap; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.05); }
   </style>
@@ -177,24 +177,24 @@
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
-    /* TOAST NOTIFICATION */
+    /* TOAST NOTIFICATION SYSTEM */
     window.showToast = function(msg, type = 'success') {
       let toastContainer = document.getElementById('toast-container');
       if (!toastContainer) {
         toastContainer = document.createElement('div');
         toastContainer.id = 'toast-container';
-        toastContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+        toastContainer.style.cssText = 'position: fixed; bottom: 25px; right: 25px; z-index: 99999; display: flex; flex-direction: column; gap: 10px;';
         document.body.appendChild(toastContainer);
       }
 
       const toast = document.createElement('div');
-      toast.style.cssText = `background: ${type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)'}; color: white; padding: 12px 20px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; backdrop-filter: blur(10px); box-shadow: 0 10px 25px rgba(0,0,0,0.3);`;
+      toast.style.cssText = `background: ${type === 'error' ? 'rgba(239, 68, 68, 0.92)' : 'rgba(16, 185, 129, 0.92)'}; color: white; padding: 12px 22px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s ease;`;
       toast.innerText = msg;
       toastContainer.appendChild(toast);
 
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
+        toast.style.transform = 'translateY(10px)';
         setTimeout(() => toast.remove(), 300);
       }, 3000);
     };
@@ -238,7 +238,7 @@
     window.handleLogout = async function() {
       await supabaseClient.auth.signOut();
       showToast("Logged out successfully", "success");
-      setTimeout(() => location.reload(), 500);
+      setTimeout(() => location.reload(), 400);
     };
 
     window.handleCreateUser = async function(event) {

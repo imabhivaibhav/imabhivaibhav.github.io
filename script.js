@@ -53,7 +53,61 @@ window.showToast = function(msg, type = 'success') {
 };
 
 /* =========================================================
-   3. TYPED EFFECT INITIALIZATION
+   3. VISITOR TRACKING SYSTEM
+========================================================= */
+function getVisitorId() {
+  let vid = localStorage.getItem('visitor_id');
+  if (!vid) {
+    vid = 'v_' + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem('visitor_id', vid);
+  }
+  return vid;
+}
+
+async function trackTabView(tabName) {
+  if (!supabaseClient) return;
+
+  let ipData = JSON.parse(sessionStorage.getItem('user_ip_data'));
+  if (!ipData) {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      ipData = { ip: data.ip || 'Unknown', location: `${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}` };
+      sessionStorage.setItem('user_ip_data', JSON.stringify(ipData));
+    } catch (e) {
+      ipData = { ip: 'Unknown', location: 'Unknown' };
+    }
+  }
+
+  const visitorId = getVisitorId();
+  const today = new Date().toISOString().split('T')[0];
+
+  // 1. Log tab view (Deletes after 7 days via database trigger)
+  await supabaseClient.from('visitor_logs').insert([
+    { visitor_id: visitorId, tab_name: tabName, user_ip: ipData.ip, location: ipData.location }
+  ]);
+
+  // 2. Increment Daily Summary Count (Permanent)
+  const { data } = await supabaseClient
+    .from('daily_visitors')
+    .select('total_views')
+    .eq('visit_date', today)
+    .single();
+
+  if (data) {
+    await supabaseClient
+      .from('daily_visitors')
+      .update({ total_views: data.total_views + 1 })
+      .eq('visit_date', today);
+  } else {
+    await supabaseClient
+      .from('daily_visitors')
+      .insert([{ visit_date: today, total_views: 1 }]);
+  }
+}
+
+/* =========================================================
+   4. TYPED EFFECT INITIALIZATION
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById('typed')) {
@@ -74,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =========================================================
-   4. PROJECTS DATA DIRECTORY (STATIC)
+   5. PROJECTS DATA DIRECTORY (STATIC)
 ========================================================= */
 const projects = [
   {
@@ -120,7 +174,7 @@ window.addEventListener('load', () => {
 });
 
 /* =========================================================
-   5. NAVIGATION & VIEW ROUTING
+   6. NAVIGATION & VIEW ROUTING
 ========================================================= */
 window.showLanding = function(addHistory = true) {
   if (addHistory) {
@@ -130,6 +184,7 @@ window.showLanding = function(addHistory = true) {
   document.getElementById('electricity').style.display = 'block';
   document.getElementById('top-nav').style.display = 'none';
   document.getElementById('site-contents').style.display = 'none';
+  trackTabView('landing');
 };
 
 window.prepareMainSite = function() {
@@ -147,6 +202,7 @@ window.showAbout = function(addHistory = true) {
   prepareMainSite();
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('projects-section').style.display = 'none';
+  trackTabView('about');
 
   document.getElementById('main-content').innerHTML = `
     <div class="about-page">
@@ -254,7 +310,7 @@ window.showMorePhotos = function() {
 };
 
 /* =========================================================
-   6. MESSAGE SECTION & SUBMISSION WITH TOAST & REDIRECT
+   7. MESSAGE SECTION & SUBMISSION WITH TOAST & REDIRECT
 ========================================================= */
 window.showMessage = function(addHistory = true) {
   if (addHistory) {
@@ -264,6 +320,7 @@ window.showMessage = function(addHistory = true) {
   prepareMainSite();
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('projects-section').style.display = 'none';
+  trackTabView('message');
 
   document.getElementById('main-content').innerHTML = `
     <div class="contact-container">
@@ -327,12 +384,13 @@ window.handleFormSubmit = async function(event) {
 };
 
 /* =========================================================
-   7. RESUME & DYNAMIC PROJECTS SECTION
+   8. RESUME & DYNAMIC PROJECTS SECTION
 ========================================================= */
 window.showResume = function() {
   prepareMainSite();
   document.getElementById('main-content').style.display = 'block';
   document.getElementById('projects-section').style.display = 'none';
+  trackTabView('resume');
 
   document.getElementById('main-content').innerHTML = `
     <div class="resume-container">
@@ -359,6 +417,7 @@ window.showProjects = async function(addHistory = true) {
   prepareMainSite();
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('projects-section').style.display = 'block';
+  trackTabView('projects');
 
   let allProjects = [...projects];
 
@@ -419,6 +478,7 @@ window.loadDynamicProjectContent = function(repoPath, addHistory = true) {
   const mainContent = document.getElementById('main-content');
   document.getElementById('projects-section').style.display = 'none';
   mainContent.style.display = 'block';
+  trackTabView('project_detail');
 
   const url = `https://raw.githubusercontent.com/${repoPath}/main/README.md`;
 
@@ -436,7 +496,108 @@ window.loadDynamicProjectContent = function(repoPath, addHistory = true) {
 };
 
 /* =========================================================
-   8. BROWSER HISTORY & BACKGROUND ANIMATIONS
+   9. ADMIN PORTAL SECTION
+========================================================= */
+window.showAdminPortal = async function(addHistory = true) {
+  if (addHistory) {
+    history.pushState({ page: "admin" }, "", window.location.pathname + "#admin");
+  }
+
+  prepareMainSite();
+  document.getElementById('main-content').style.display = 'block';
+  document.getElementById('projects-section').style.display = 'none';
+  trackTabView('admin_portal');
+
+  // Trigger 7-day old logs cleanup automatically
+  if (supabaseClient) {
+    try {
+      await supabaseClient.rpc('clean_old_visitor_logs');
+    } catch (e) {
+      console.error("Cleanup error:", e);
+    }
+  }
+
+  document.getElementById('main-content').innerHTML = `
+    <div style="padding: 30px; color: #fff; max-width: 900px; margin: 0 auto;">
+      <h2 style="color: #7c5cff; margin-bottom: 20px;">🛡️ Admin Dashboard</h2>
+      
+      <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+        <button onclick="loadAdminTab('stats')" class="btn" style="background: #7c5cff;">Visitor Analytics</button>
+        <button onclick="loadAdminTab('messages')" class="btn" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.1);">Messages</button>
+      </div>
+
+      <div id="admin-tab-content">Loading...</div>
+    </div>
+  `;
+
+  loadAdminTab('stats');
+};
+
+window.loadAdminTab = async function(tab) {
+  const container = document.getElementById('admin-tab-content');
+  if (!container || !supabaseClient) return;
+
+  if (tab === 'stats') {
+    container.innerHTML = "<p>Fetching analytics...</p>";
+    
+    const { data: daily } = await supabaseClient.from('daily_visitors').select('*').order('visit_date', { ascending: false });
+    const { data: logs } = await supabaseClient.from('visitor_logs').select('*').order('created_at', { ascending: false }).limit(50);
+
+    let dailyHtml = `<h3 style="margin-bottom:12px;">📅 Daily Total Views (Permanent)</h3>
+      <table style="width:100%; border-collapse:collapse; margin-bottom:30px; background: rgba(255,255,255,0.03);">
+        <tr><th style="padding:10px; border:1px solid rgba(255,255,255,0.1);">Date</th><th style="padding:10px; border:1px solid rgba(255,255,255,0.1);">Views</th></tr>`;
+    if (daily && daily.length > 0) {
+      daily.forEach(d => { 
+        dailyHtml += `<tr><td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:center;">${d.visit_date}</td><td style="padding:8px; border:1px solid rgba(255,255,255,0.1); text-align:center; color:#5ce1e6; font-weight:bold;">${d.total_views}</td></tr>`; 
+      });
+    } else {
+      dailyHtml += `<tr><td colspan="2" style="padding:10px; text-align:center;">No analytics yet.</td></tr>`;
+    }
+    dailyHtml += `</table>`;
+
+    let logsHtml = `<h3 style="margin-bottom:12px;">🕒 Recent Activity (Last 7 Days Auto-Clearing)</h3>
+      <table style="width:100%; border-collapse:collapse; background: rgba(255,255,255,0.03);">
+        <tr><th style="padding:10px; border:1px solid rgba(255,255,255,0.1);">Visitor ID</th><th style="padding:10px; border:1px solid rgba(255,255,255,0.1);">Location / IP</th><th style="padding:10px; border:1px solid rgba(255,255,255,0.1);">Tab</th><th style="padding:10px; border:1px solid rgba(255,255,255,0.1);">Time</th></tr>`;
+    if (logs && logs.length > 0) {
+      logs.forEach(l => { 
+        logsHtml += `<tr>
+          <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); font-size:0.85rem;">${l.visitor_id}</td>
+          <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); font-size:0.85rem;">${l.location || 'Unknown'} (${l.user_ip || 'N/A'})</td>
+          <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); color:#7c5cff; font-weight:bold; text-align:center;">${l.tab_name}</td>
+          <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); font-size:0.8rem; text-align:center;">${new Date(l.created_at).toLocaleString()}</td>
+        </tr>`; 
+      });
+    } else {
+      logsHtml += `<tr><td colspan="4" style="padding:10px; text-align:center;">No recent logs.</td></tr>`;
+    }
+    logsHtml += `</table>`;
+
+    container.innerHTML = dailyHtml + logsHtml;
+
+  } else if (tab === 'messages') {
+    container.innerHTML = "<p>Fetching messages...</p>";
+    const { data: msgs } = await supabaseClient.from('personal_messages').select('*').order('created_at', { ascending: false });
+
+    let msgHtml = `<h3 style="margin-bottom:12px;">📩 Received Messages</h3><div style="display:flex; flex-direction:column; gap:15px;">`;
+    if (msgs && msgs.length > 0) {
+      msgs.forEach(m => {
+        msgHtml += `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
+          <p><strong>Name:</strong> ${m.name}</p>
+          <p><strong>Email:</strong> <a href="mailto:${m.email}" style="color:#5ce1e6;">${m.email}</a></p>
+          <p><strong>Message:</strong> ${m.message}</p>
+          <p style="font-size:0.75rem; color:#94a3b8; margin-top:5px;">Received: ${new Date(m.created_at).toLocaleString()}</p>
+        </div>`;
+      });
+    } else {
+      msgHtml += `<p>No messages received yet.</p>`;
+    }
+    msgHtml += `</div>`;
+    container.innerHTML = msgHtml;
+  }
+};
+
+/* =========================================================
+   10. BROWSER HISTORY & BACKGROUND ANIMATIONS
 ========================================================= */
 window.addEventListener('popstate', function(event) {
   const state = event.state;
@@ -450,13 +611,15 @@ window.addEventListener('popstate', function(event) {
     showProjects(false);
   } else if (state.page === "project") {
     loadDynamicProjectContent(state.repo, false);
+  } else if (state.page === "admin") {
+    showAdminPortal(false);
   }
 });
 
 history.replaceState({ page: "landing" }, "", window.location.pathname);
 
 document.addEventListener('DOMContentLoaded', () => {
-  
+
   // FIX FOR MAILTO LINKS: Stop navigation interruption for direct email clicks
   document.addEventListener('click', (e) => {
     const mailLink = e.target.closest('a[href^="mailto:"]');

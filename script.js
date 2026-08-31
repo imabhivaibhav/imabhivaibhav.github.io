@@ -1,4 +1,15 @@
-/* TYPED EFFECT */
+/* =========================================================
+   1. SUPABASE CONFIGURATION
+========================================================= */
+// Apne Supabase Dashboard se URL aur Anon Key yahan replace karein
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+/* =========================================================
+   2. TYPED EFFECT INITIALIZATION
+========================================================= */
 const typed = new Typed('#typed', {
   strings: [
     'Passionate about AI',
@@ -13,7 +24,10 @@ const typed = new Typed('#typed', {
   showCursor: false
 });
 
-/* PROJECTS DATA */
+
+/* =========================================================
+   3. PROJECTS DATA DIRECTORY
+========================================================= */
 const projects = [
   {
     name: "WAL.AI",
@@ -52,9 +66,15 @@ const projects = [
   }
 ];
 
-document.getElementById("proj-count").innerText = projects.length;
+// Set project count badge dynamically
+if (document.getElementById("proj-count")) {
+  document.getElementById("proj-count").innerText = projects.length;
+}
 
-/* NAVIGATION & ROUTING */
+
+/* =========================================================
+   4. NAVIGATION & VIEW ROUTING
+========================================================= */
 function showLanding(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "landing" }, "", window.location.pathname);
@@ -112,7 +132,7 @@ function showAbout(addHistory = true) {
     </div>
   `;
 
-  // Fetch photos dynamically
+  // Fetch Slideshow and Gallery Photos dynamically
   const photoListURL = 'https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/photo.txt?t=' + Date.now();
   const photoBaseURL = 'https://raw.githubusercontent.com/imabhivaibhav/imabhivaibhav.github.io/main/';
 
@@ -182,6 +202,9 @@ window.showMorePhotos = function() {
   if (button) button.style.display = 'none';
 };
 
+/* =========================================================
+   5. MESSAGE SECTION & SUPABASE SUBMISSION
+========================================================= */
 function showMessage(addHistory = true) {
   if (addHistory) {
     history.pushState({ page: "message" }, "", window.location.pathname + "#message");
@@ -194,7 +217,7 @@ function showMessage(addHistory = true) {
   document.getElementById('main-content').innerHTML = `
     <div class="contact-container">
       <h2 class="contact-title">Send a Message</h2>
-      <form class="contact-form" onsubmit="handleFormSubmit(event)">
+      <form class="contact-form" id="contact-form" onsubmit="handleFormSubmit(event)">
         <div class="form-group">
           <label for="contact-name">Name</label>
           <input type="text" id="contact-name" class="form-control" placeholder="Your Name" required />
@@ -212,19 +235,44 @@ function showMessage(addHistory = true) {
 
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" onclick="showLanding()">Cancel</button>
-          <button type="submit" class="btn">Send</button>
+          <button type="submit" id="submit-btn" class="btn">Send</button>
         </div>
       </form>
     </div>
   `;
 }
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
   event.preventDefault();
-  alert("Thank you for your message! It has been submitted.");
-  showLanding();
+
+  const submitBtn = document.getElementById('submit-btn');
+  submitBtn.innerText = 'Sending...';
+  submitBtn.disabled = true;
+
+  const name = document.getElementById('contact-name').value;
+  const email = document.getElementById('contact-email').value;
+  const message = document.getElementById('contact-msg').value;
+
+  // Save message directly to Supabase Table
+  const { data, error } = await supabase
+    .from('personal_messages')
+    .insert([{ name, email, message }]);
+
+  if (error) {
+    alert("Error sending message: " + error.message);
+  } else {
+    alert("Thank you! Your message has been sent successfully.");
+    document.getElementById('contact-form').reset();
+    showLanding();
+  }
+
+  submitBtn.innerText = 'Send';
+  submitBtn.disabled = false;
 }
 
+/* =========================================================
+   6. RESUME & PROJECTS SECTION
+========================================================= */
 function showResume() {
   prepareMainSite();
   document.getElementById('main-content').style.display = 'block';
@@ -303,7 +351,9 @@ function loadProjectContent(idx, addHistory = true) {
     });
 }
 
-/* HISTORY POPSTATE EVENT */
+/* =========================================================
+   7. BROWSER HISTORY CONTROL & CANVAS ANIMATIONS
+========================================================= */
 window.addEventListener('popstate', function(event) {
   const state = event.state;
   if (!state || state.page === "landing") {
@@ -319,45 +369,52 @@ window.addEventListener('popstate', function(event) {
   }
 });
 
-/* INITIAL HISTORY STATE */
 history.replaceState({ page: "landing" }, "", window.location.pathname);
 
-/* CANVAS/ANIMATION BUILDERS */
+// Stars animation builder
 const starsContainer = document.getElementById('stars');
-for (let i = 0; i < 260; i++) {
-  const star = document.createElement('div');
-  star.classList.add('star');
-  if (Math.random() > 0.82) star.classList.add('big');
-  star.style.left = Math.random() * 100 + 'vw';
-  star.style.top = Math.random() * 100 + 'vh';
-  star.style.animationDuration = (Math.random() * 10 + 8) + 's';
-  star.style.animationDelay = Math.random() * -20 + 's';
-  starsContainer.appendChild(star);
+if (starsContainer) {
+  for (let i = 0; i < 260; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    if (Math.random() > 0.82) star.classList.add('big');
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.top = Math.random() * 100 + 'vh';
+    star.style.animationDuration = (Math.random() * 10 + 8) + 's';
+    star.style.animationDelay = Math.random() * -20 + 's';
+    starsContainer.appendChild(star);
+  }
 }
 
+// Electricity animation builder
 const electricity = document.getElementById('electricity');
-for (let i = 0; i < 60; i++) {
-  const bolt = document.createElement('div');
-  bolt.classList.add('bolt');
-  bolt.style.left = Math.random() * 100 + '%';
-  bolt.style.height = (Math.random() * 160 + 60) + 'px';
-  bolt.style.animationDuration = (Math.random() * 2 + 1.2) + 's';
-  bolt.style.animationDelay = Math.random() * -5 + 's';
-  electricity.appendChild(bolt);
+if (electricity) {
+  for (let i = 0; i < 60; i++) {
+    const bolt = document.createElement('div');
+    bolt.classList.add('bolt');
+    bolt.style.left = Math.random() * 100 + '%';
+    bolt.style.height = (Math.random() * 160 + 60) + 'px';
+    bolt.style.animationDuration = (Math.random() * 2 + 1.2) + 's';
+    bolt.style.animationDelay = Math.random() * -5 + 's';
+    electricity.appendChild(bolt);
+  }
 }
 
+// Avatar Interactive Movement
 const avatar = document.getElementById('landing-avatar');
-avatar.addEventListener('mouseenter', () => {
-  const randomX = (Math.random() - 0.5) * 520;
-  const randomY = (Math.random() - 0.5) * 320;
-  avatar.style.transform = `translate(${randomX}px,${randomY}px) rotate(${Math.random() * 30 - 15}deg) scale(1.08)`;
-});
+if (avatar) {
+  avatar.addEventListener('mouseenter', () => {
+    const randomX = (Math.random() - 0.5) * 520;
+    const randomY = (Math.random() - 0.5) * 320;
+    avatar.style.transform = `translate(${randomX}px,${randomY}px) rotate(${Math.random() * 30 - 15}deg) scale(1.08)`;
+  });
 
-avatar.addEventListener('mouseleave', () => {
-  setTimeout(() => {
-    avatar.style.transform = 'translate(0px,0px) rotate(0deg) scale(1)';
-  }, 350);
-});
+  avatar.addEventListener('mouseleave', () => {
+    setTimeout(() => {
+      avatar.style.transform = 'translate(0px,0px) rotate(0deg) scale(1)';
+    }, 350);
+  });
+}
 
-/* INITIAL RENDER */
+// Initial render
 showLanding();

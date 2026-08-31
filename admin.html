@@ -3,38 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personal Admin Portal | Inbox</title>
+  <title>Personal Admin Terminal | Control Panel</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     body { background: #070b19; color: #fff; min-height: 100vh; padding: 2rem; }
     
     .container { max-width: 1000px; margin: 0 auto; }
-    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; backdrop-filter: blur(20px); }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; backdrop-filter: blur(20px); margin-bottom: 2rem; }
     
-    h1, h2 { background: linear-gradient(90deg, #fff, #7c5cff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    h1, h2, h3 { background: linear-gradient(90deg, #fff, #7c5cff, #5ce1e6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
-    /* Login Form */
     .login-box { max-width: 400px; margin: 100px auto; text-align: center; }
-    .form-control { width: 100%; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; margin-bottom: 1rem; outline: none; }
+    .form-group { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.85rem; color: #5ce1e6; }
+    .form-control { width: 100%; padding: 0.9rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
     
-    /* Buttons */
     .btn { padding: 0.8rem 1.5rem; border-radius: 99px; border: none; background: linear-gradient(135deg, #7c5cff, #5ce1e6); color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
     .btn:hover { opacity: 0.9; transform: translateY(-2px); }
     .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
     
-    /* Inbox Table */
     .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
     th { color: #5ce1e6; font-size: 0.85rem; text-transform: uppercase; }
-    tr.msg-row { cursor: pointer; transition: 0.2s; }
-    tr.msg-row:hover { background: rgba(124, 92, 255, 0.1); }
     
-    /* Drawer */
-    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: flex-end; z-index: 100; }
-    .drawer { width: 100%; max-width: 450px; background: #0f172a; height: 100%; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid rgba(255,255,255,0.1); }
-    .drawer-body { background: rgba(255,255,255,0.03); padding: 1.2rem; border-radius: 12px; margin-top: 1.5rem; line-height: 1.6; white-space: pre-wrap; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media(max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -43,68 +38,119 @@
 
   <div id="auth-section" class="card login-box">
     <h2>Admin Login</h2>
-    <p style="color: #aaa; margin-bottom: 1.5rem; font-size: 0.9rem;">Sign in to view portfolio messages</p>
+    <p style="color: #aaa; margin-bottom: 1.5rem; font-size: 0.9rem;">Sign in to control dashboard</p>
     
-    <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
-      <input type="email" id="admin-email" class="form-control" placeholder="Admin Email" required />
-      <input type="password" id="admin-pass" class="form-control" placeholder="Password" required />
+    <form onsubmit="handleAdminLogin(event)">
+      <div class="form-group">
+        <input type="email" id="admin-email" class="form-control" placeholder="Admin Email" required />
+      </div>
+      <div class="form-group">
+        <input type="password" id="admin-pass" class="form-control" placeholder="Password" required />
+      </div>
       <button type="submit" id="login-btn" class="btn" style="width: 100%;">Login to Terminal</button>
     </form>
   </div>
 
-  <div id="dashboard-section" class="container card" style="display: none;">
-    <div class="header-bar">
+  <div id="dashboard-section" class="container" style="display: none;">
+    
+    <div class="card header-bar">
       <div>
-        <h1>Personal Messages</h1>
-        <p style="color: #aaa; font-size: 0.9rem;">Live submissions from your landing page</p>
+        <h1>Admin Control Terminal</h1>
+        <p style="color: #aaa; font-size: 0.9rem;">Manage user accounts, messages & portfolio projects</p>
       </div>
       <button onclick="handleLogout()" class="btn-danger">Logout</button>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Snippet</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="message-rows">
-        <tr><td colspan="5">Loading messages...</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div id="drawer-overlay" class="drawer-overlay">
-    <div class="drawer">
-      <div>
-        <h3 id="drawer-name">Sender Name</h3>
-        <p id="drawer-email" style="color: #5ce1e6; font-size: 0.9rem; margin-top: 4px;"></p>
-        <p id="drawer-date" style="color: #888; font-size: 0.8rem; margin-top: 4px;"></p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>➕ Create New Admin / User</h3>
+        <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 1rem;">Add authorized accounts directly to Supabase Auth.</p>
         
-        <div class="drawer-body" id="drawer-msg">Message content...</div>
+        <form onsubmit="handleCreateUser(event)">
+          <div class="form-group">
+            <label>User Email</label>
+            <input type="email" id="new-user-email" class="form-control" placeholder="user@example.com" required />
+          </div>
+          <div class="form-group">
+            <label>User Password</label>
+            <input type="password" id="new-user-pass" class="form-control" placeholder="Minimum 6 characters" required />
+          </div>
+          <button type="submit" id="create-user-btn" class="btn" style="width: 100%;">Create Account</button>
+        </form>
       </div>
-      
-      <div style="display: flex; gap: 10px; margin-top: 2rem;">
-        <button onclick="closeDrawer()" class="btn" style="background: rgba(255,255,255,0.1); flex: 1;">Close</button>
-        <button id="delete-btn" class="btn-danger" style="flex: 1;">Delete Message</button>
+
+      <div class="card">
+        <h3>🚀 Add New Project</h3>
+        <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 1rem;">Post new projects directly to your main website.</p>
+        
+        <form onsubmit="handleAddProject(event)">
+          <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" id="proj-name" class="form-control" placeholder="e.g. WAL.AI" required />
+          </div>
+          <div class="form-group">
+            <label>GitHub Repository Path (username/repository)</label>
+            <input type="text" id="proj-repo" class="form-control" placeholder="imabhivaibhav/BNS.AI" required />
+          </div>
+          <div class="form-group">
+            <label>Icon/Image URL</label>
+            <input type="url" id="proj-img" class="form-control" placeholder="https://cdn.jsdelivr.net/.../icon.png" />
+          </div>
+          <div class="form-group">
+            <label>Short Description</label>
+            <input type="text" id="proj-desc" class="form-control" placeholder="Brief project summary" required />
+          </div>
+          <button type="submit" id="add-proj-btn" class="btn" style="width: 100%;">Publish Project</button>
+        </form>
       </div>
     </div>
+
+    <div class="card">
+      <h2>💬 Received Messages</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="message-rows">
+          <tr><td colspan="5">Loading messages...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>📌 Existing Projects</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Repository</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="project-rows">
+          <tr><td colspan="4">Loading projects...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
   <script>
-    /* SUPABASE INITIALIZATION */
-    const SUPABASE_URL = 'https://hgbmebmjrajbwhqjaeeu.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnYm1lYm1qcmFqYndocWphZWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNTY2NTMsImV4cCI6MjEwMzczMjY1M30.fPZ_sJEeACTkj64sapeszIywAc9At1Ytb1krdEubtLE';
+    const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
     
     let supabaseClient = null;
     if (window.supabase) {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
-    // Auth Check
     async function checkSession() {
       if (!supabaseClient) return;
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -112,108 +158,113 @@
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
         fetchMessages();
-        listenToRealtime();
+        fetchProjects();
       }
     }
 
-    // Login Handler Function
     window.handleAdminLogin = async function(event) {
       event.preventDefault();
-      
-      const btn = document.getElementById('login-btn');
-      btn.innerText = 'Verifying...';
-      btn.disabled = true;
-
       const email = document.getElementById('admin-email').value;
       const password = document.getElementById('admin-pass').value;
 
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-
-        if (error) {
-          alert("Login Failed: " + error.message);
-        } else {
-          document.getElementById('auth-section').style.display = 'none';
-          document.getElementById('dashboard-section').style.display = 'block';
-          fetchMessages();
-          listenToRealtime();
-        }
-      } catch (err) {
-        alert("Authentication Error: " + err.message);
-      } finally {
-        btn.innerText = 'Login to Terminal';
-        btn.disabled = false;
-      }
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) alert("Login Failed: " + error.message);
+      else checkSession();
     };
 
     window.handleLogout = async function() {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
+      await supabaseClient.auth.signOut();
       location.reload();
     };
 
-    async function fetchMessages() {
-      const { data: messages, error } = await supabaseClient
-        .from('personal_messages')
-        .select('*')
-        .order('created_at', { ascending: false });
+    // CREATE USER FUNCTION
+    window.handleCreateUser = async function(event) {
+      event.preventDefault();
+      const email = document.getElementById('new-user-email').value;
+      const password = document.getElementById('new-user-pass').value;
 
-      if (error) return console.error(error);
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) {
+        alert("Error creating user: " + error.message);
+      } else {
+        alert(`User created successfully for ${email}!`);
+        event.target.reset();
+      }
+    };
 
-      const tbody = document.getElementById('message-rows');
-      if (!messages || messages.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">No messages received yet.</td></tr>';
-        return;
+    // ADD PROJECT FUNCTION
+    window.handleAddProject = async function(event) {
+      event.preventDefault();
+      const name = document.getElementById('proj-name').value;
+      const repo = document.getElementById('proj-repo').value;
+      let img = document.getElementById('proj-img').value;
+      const desc_text = document.getElementById('proj-desc').value;
+
+      if (!img) {
+        img = "https://cdn.jsdelivr.net/gh/imabhivaibhav/default@main/project-icon.png";
       }
 
+      const { data, error } = await supabaseClient
+        .from('projects')
+        .insert([{ name, repo, img, desc_text, readme: true }]);
+
+      if (error) {
+        alert("Error adding project: " + error.message);
+      } else {
+        alert("Project published successfully!");
+        event.target.reset();
+        fetchProjects();
+      }
+    };
+
+    async function fetchMessages() {
+      const { data: messages } = await supabaseClient.from('personal_messages').select('*').order('created_at', { ascending: false });
+      const tbody = document.getElementById('message-rows');
+      if (!messages || messages.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">No messages received.</td></tr>';
+        return;
+      }
       tbody.innerHTML = messages.map(m => `
-        <tr class="msg-row" onclick="openDrawer('${m.id}', '${encodeURIComponent(m.name)}', '${m.email}', '${encodeURIComponent(m.message)}', '${new Date(m.created_at).toLocaleString()}')">
+        <tr>
           <td>${new Date(m.created_at).toLocaleDateString()}</td>
           <td><strong>${m.name}</strong></td>
-          <td style="color: #aaa;">${m.email}</td>
-          <td>${m.message.length > 40 ? m.message.substring(0, 40) + '...' : m.message}</td>
-          <td>
-            <button class="btn-danger" onclick="event.stopPropagation(); deleteMessage('${m.id}')">Delete</button>
-          </td>
+          <td>${m.email}</td>
+          <td>${m.message}</td>
+          <td><button class="btn-danger" onclick="deleteMessage('${m.id}')">Delete</button></td>
         </tr>
       `).join('');
     }
 
-    window.openDrawer = function(id, name, email, msg, date) {
-      document.getElementById('drawer-name').innerText = decodeURIComponent(name);
-      document.getElementById('drawer-email').innerText = email;
-      document.getElementById('drawer-date').innerText = date;
-      document.getElementById('drawer-msg').innerText = decodeURIComponent(msg);
-      document.getElementById('delete-btn').onclick = () => deleteMessage(id);
-      
-      document.getElementById('drawer-overlay').style.display = 'flex';
-    };
-
-    window.closeDrawer = function() {
-      document.getElementById('drawer-overlay').style.display = 'none';
-    };
+    async function fetchProjects() {
+      const { data: projs } = await supabaseClient.from('projects').select('*').order('created_at', { ascending: false });
+      const tbody = document.getElementById('project-rows');
+      if (!projs || projs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="color:#888;">No dynamic projects added yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = projs.map(p => `
+        <tr>
+          <td><strong>${p.name}</strong></td>
+          <td><code>${p.repo}</code></td>
+          <td>${p.desc_text}</td>
+          <td><button class="btn-danger" onclick="deleteProject('${p.id}')">Delete</button></td>
+        </tr>
+      `).join('');
+    }
 
     window.deleteMessage = async function(id) {
-      if (confirm("Delete this message permanently?")) {
+      if (confirm("Delete message?")) {
         await supabaseClient.from('personal_messages').delete().eq('id', id);
-        closeDrawer();
         fetchMessages();
       }
     };
 
-    function listenToRealtime() {
-      if (!supabaseClient) return;
-      supabaseClient
-        .channel('schema-db-changes')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'personal_messages' }, () => {
-          fetchMessages();
-        })
-        .subscribe();
-    }
+    window.deleteProject = async function(id) {
+      if (confirm("Delete project?")) {
+        await supabaseClient.from('projects').delete().eq('id', id);
+        fetchProjects();
+      }
+    };
 
     document.addEventListener("DOMContentLoaded", checkSession);
   </script>

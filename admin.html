@@ -27,9 +27,18 @@
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
     th { color: #5ce1e6; font-size: 0.85rem; text-transform: uppercase; }
+    tr.msg-row { cursor: pointer; transition: 0.2s; }
+    tr.msg-row:hover { background: rgba(124, 92, 255, 0.1); }
     
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
     @media(max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    
+    #dashboard-section { display: none; }
+
+    /* SIDE DRAWER STYLES */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: flex-end; z-index: 999; backdrop-filter: blur(4px); }
+    .drawer { width: 100%; max-width: 450px; background: #0f172a; height: 100%; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid rgba(255,255,255,0.1); box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+    .drawer-body { background: rgba(255,255,255,0.03); padding: 1.2rem; border-radius: 12px; margin-top: 1.5rem; line-height: 1.6; white-space: pre-wrap; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.05); }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -51,7 +60,7 @@
     </form>
   </div>
 
-  <div id="dashboard-section" class="container" style="display: none;">
+  <div id="dashboard-section" class="container">
     
     <div class="card header-bar">
       <div>
@@ -113,7 +122,7 @@
             <th>Date</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Message</th>
+            <th>Message Snippet</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -142,6 +151,23 @@
 
   </div>
 
+  <div id="drawer-overlay" class="drawer-overlay">
+    <div class="drawer">
+      <div>
+        <h3 id="drawer-name">Sender Name</h3>
+        <p id="drawer-email" style="color: #5ce1e6; font-size: 0.9rem; margin-top: 4px;"></p>
+        <p id="drawer-date" style="color: #888; font-size: 0.8rem; margin-top: 4px;"></p>
+        
+        <div class="drawer-body" id="drawer-msg">Message content...</div>
+      </div>
+      
+      <div style="display: flex; gap: 10px; margin-top: 2rem;">
+        <button onclick="closeDrawer()" class="btn" style="background: rgba(255,255,255,0.1); flex: 1;">Close</button>
+        <button id="drawer-delete-btn" class="btn-danger" style="flex: 1;">Delete Message</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SUPABASE_URL = 'https://hgbmebmjrajbwhqjaeeu.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnYm1lYm1qcmFqYndocWphZWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNTY2NTMsImV4cCI6MjEwMzczMjY1M30.fPZ_sJEeACTkj64sapeszIywAc9At1Ytb1krdEubtLE';
@@ -151,6 +177,28 @@
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
+    /* TOAST NOTIFICATION */
+    window.showToast = function(msg, type = 'success') {
+      let toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+        document.body.appendChild(toastContainer);
+      }
+
+      const toast = document.createElement('div');
+      toast.style.cssText = `background: ${type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)'}; color: white; padding: 12px 20px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; backdrop-filter: blur(10px); box-shadow: 0 10px 25px rgba(0,0,0,0.3);`;
+      toast.innerText = msg;
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
+
     async function checkSession() {
       if (!supabaseClient) return;
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -159,25 +207,40 @@
         document.getElementById('dashboard-section').style.display = 'block';
         fetchMessages();
         fetchProjects();
+      } else {
+        document.getElementById('auth-section').style.display = 'block';
+        document.getElementById('dashboard-section').style.display = 'none';
       }
     }
 
     window.handleAdminLogin = async function(event) {
       event.preventDefault();
+      const btn = document.getElementById('login-btn');
+      btn.innerText = 'Verifying...';
+      btn.disabled = true;
+
       const email = document.getElementById('admin-email').value;
       const password = document.getElementById('admin-pass').value;
 
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) alert("Login Failed: " + error.message);
-      else checkSession();
+      
+      if (error) {
+        showToast("Login Failed: " + error.message, "error");
+      } else {
+        showToast("Welcome back Admin!", "success");
+        checkSession();
+      }
+      
+      btn.innerText = 'Login to Terminal';
+      btn.disabled = false;
     };
 
     window.handleLogout = async function() {
       await supabaseClient.auth.signOut();
-      location.reload();
+      showToast("Logged out successfully", "success");
+      setTimeout(() => location.reload(), 500);
     };
 
-    // CREATE USER FUNCTION
     window.handleCreateUser = async function(event) {
       event.preventDefault();
       const email = document.getElementById('new-user-email').value;
@@ -185,14 +248,13 @@
 
       const { data, error } = await supabaseClient.auth.signUp({ email, password });
       if (error) {
-        alert("Error creating user: " + error.message);
+        showToast("Error: " + error.message, "error");
       } else {
-        alert(`User created successfully for ${email}!`);
+        showToast(`Account created for ${email}!`, "success");
         event.target.reset();
       }
     };
 
-    // ADD PROJECT FUNCTION
     window.handleAddProject = async function(event) {
       event.preventDefault();
       const name = document.getElementById('proj-name').value;
@@ -209,9 +271,9 @@
         .insert([{ name, repo, img, desc_text, readme: true }]);
 
       if (error) {
-        alert("Error adding project: " + error.message);
+        showToast("Error adding project: " + error.message, "error");
       } else {
-        alert("Project published successfully!");
+        showToast("Project published successfully!", "success");
         event.target.reset();
         fetchProjects();
       }
@@ -225,15 +287,29 @@
         return;
       }
       tbody.innerHTML = messages.map(m => `
-        <tr>
+        <tr class="msg-row" onclick="openDrawer('${m.id}', '${encodeURIComponent(m.name)}', '${m.email}', '${encodeURIComponent(m.message)}', '${new Date(m.created_at).toLocaleString()}')">
           <td>${new Date(m.created_at).toLocaleDateString()}</td>
           <td><strong>${m.name}</strong></td>
           <td>${m.email}</td>
-          <td>${m.message}</td>
-          <td><button class="btn-danger" onclick="deleteMessage('${m.id}')">Delete</button></td>
+          <td>${m.message.length > 40 ? m.message.substring(0, 40) + '...' : m.message}</td>
+          <td><button class="btn-danger" onclick="event.stopPropagation(); deleteMessage('${m.id}')">Delete</button></td>
         </tr>
       `).join('');
     }
+
+    window.openDrawer = function(id, name, email, msg, date) {
+      document.getElementById('drawer-name').innerText = decodeURIComponent(name);
+      document.getElementById('drawer-email').innerText = email;
+      document.getElementById('drawer-date').innerText = date;
+      document.getElementById('drawer-msg').innerText = decodeURIComponent(msg);
+      document.getElementById('drawer-delete-btn').onclick = () => deleteMessage(id);
+      
+      document.getElementById('drawer-overlay').style.display = 'flex';
+    };
+
+    window.closeDrawer = function() {
+      document.getElementById('drawer-overlay').style.display = 'none';
+    };
 
     async function fetchProjects() {
       const { data: projs } = await supabaseClient.from('projects').select('*').order('created_at', { ascending: false });
@@ -253,17 +329,16 @@
     }
 
     window.deleteMessage = async function(id) {
-      if (confirm("Delete message?")) {
-        await supabaseClient.from('personal_messages').delete().eq('id', id);
-        fetchMessages();
-      }
+      await supabaseClient.from('personal_messages').delete().eq('id', id);
+      showToast("Message deleted", "success");
+      closeDrawer();
+      fetchMessages();
     };
 
     window.deleteProject = async function(id) {
-      if (confirm("Delete project?")) {
-        await supabaseClient.from('projects').delete().eq('id', id);
-        fetchProjects();
-      }
+      await supabaseClient.from('projects').delete().eq('id', id);
+      showToast("Project deleted", "success");
+      fetchProjects();
     };
 
     document.addEventListener("DOMContentLoaded", checkSession);
